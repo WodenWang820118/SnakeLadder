@@ -13,6 +13,10 @@ import java.util.Properties;
 public class NavigationPane extends GameGrid
   implements GGButtonListener
 {
+  // TODO: the class should be put in a separate class
+  // the class connects to Monitor controller
+  // the class connects to the Die class
+  // the class connects to the ManualDieButton class
   private class SimulatedPlayer extends Thread
   {
     public void run()
@@ -29,6 +33,7 @@ public class NavigationPane extends GameGrid
 
   }
 
+  // TODO: the die tags and locations should be put in a separate class
   private final int DIE1_BUTTON_TAG = 1;
   private final int DIE2_BUTTON_TAG = 2;
   private final int DIE3_BUTTON_TAG = 3;
@@ -67,6 +72,7 @@ public class NavigationPane extends GameGrid
   private GGButton die5Button = new CustomGGButton(DIE5_BUTTON_TAG, "sprites/Number_5.png");
   private GGButton die6Button = new CustomGGButton(DIE6_BUTTON_TAG, "sprites/Number_6.png");
 
+  // TODO: the board related variables should be put in a separate class
   private GGTextField pipsField;
   private GGTextField statusField;
   private GGTextField resultField;
@@ -81,7 +87,9 @@ public class NavigationPane extends GameGrid
   private Properties properties;
   private java.util.List<java.util.List<Integer>> dieValues = new ArrayList<>();
   private GamePlayCallback gamePlayCallback;
-
+  
+  // TODO: the class is dealing with GUI
+  // TODO: potential controller usage
   NavigationPane(Properties properties)
   {
     this.properties = properties;
@@ -102,15 +110,20 @@ public class NavigationPane extends GameGrid
     new SimulatedPlayer().start();
   }
 
+  // TODO: the method should be put in the Die class
   void setupDieValues() {
     for (int i = 0; i < gp.getNumberOfPlayers(); i++) {
+      // an arrayList for storing the die values for each player
       java.util.List<Integer> dieValuesForPlayer = new ArrayList<>();
+      // get the properties from the test2.properties file
+      // the array of string will be split by "," and elements will be parsed to integer, stored in dieValuesForPlayer
       if (properties.getProperty("die_values." + i) != null) {
         String dieValuesString = properties.getProperty("die_values." + i);
         String[] dieValueStrings = dieValuesString.split(",");
         for (int j = 0; j < dieValueStrings.length; j++) {
           dieValuesForPlayer.add(Integer.parseInt(dieValueStrings[j]));
         }
+        // the dieValues add the dieValuesForPlayer to the dieValues list for the testing purpose
         dieValues.add(dieValuesForPlayer);
       } else {
         System.out.println("All players need to be set a die value for the full testing mode to run. " +
@@ -129,9 +142,12 @@ public class NavigationPane extends GameGrid
   void setGamePane(GamePane gp)
   {
     this.gp = gp;
+    // when initializing the game, the method will call the setupDieValues() method
     setupDieValues();
   }
 
+  // the class ManualDieButton implements GGButtonListener interface
+  // TODO: the ManualDieButton class should be an independent class
   class ManualDieButton implements GGButtonListener {
     @Override
     public void buttonPressed(GGButton ggButton) {
@@ -155,6 +171,8 @@ public class NavigationPane extends GameGrid
       }
     }
   }
+
+  // TODO: the method should be in a separate class
   void addDieButtons() {
     ManualDieButton manualDieButton = new ManualDieButton();
 
@@ -173,6 +191,7 @@ public class NavigationPane extends GameGrid
     die6Button.addButtonListener(manualDieButton);
   }
 
+  // TODO: the method should be put in the Die class
   private int getDieValue() {
     if (dieValues == null) {
       return RANDOM_ROLL_TAG;
@@ -185,6 +204,8 @@ public class NavigationPane extends GameGrid
     return RANDOM_ROLL_TAG;
   }
 
+  // TODO: the method createGui() should be put in a separate class
+  // TODO: potential controller usage, dealing with GUI
   void createGui()
   {
     addActor(new Actor("sprites/dieboard.gif"), dieBoardLocation);
@@ -202,6 +223,10 @@ public class NavigationPane extends GameGrid
       }
     });
 
+    // TODO: the method should be put in a separate class
+    // the method should connect to ManualDieButton class
+    // the method should be able to access the gif files
+    // TODO: potential protected variations usage
     addActor(toggleCheck, toggleModeLocation);
     toggleCheck.addCheckButtonListener(new GGCheckButtonListener() {
       @Override
@@ -236,30 +261,40 @@ public class NavigationPane extends GameGrid
     resultField.show();
   }
 
+  // TODO: should be put in a separate class
+  // should relate to the game play statistics
   void showPips(String text)
   {
     pipsField.setText(text);
     if (text != "") System.out.println(text);
   }
 
+  // TODO: should be put in a separate class
+  // should relate to the game play statistics
   void showStatus(String text)
   {
     statusField.setText(text);
     System.out.println("Status: " + text);
   }
 
+  // TODO: should be put in a separate class
+  // should relate to the game play statistics
   void showScore(String text)
   {
     scoreField.setText(text);
     System.out.println(text);
   }
 
+  // TODO: should be put in a separate class
+  // should relate to the game play statistics
   void showResult(String text)
   {
     resultField.setText(text);
     System.out.println("Result: " + text);
   }
 
+  // TODO: the method should be put in the Die class
+  // TODO: potential indirection usage
   void prepareRoll(int currentIndex)
   {
     if (currentIndex == 100)  // Game over
@@ -296,6 +331,8 @@ public class NavigationPane extends GameGrid
     }
   }
 
+  // TODO: the method should be put in a separate class
+  // TODO: the method should connect to a class dealing with the statistics
   void startMoving(int nb)
   {
     showStatus("Moving...");
@@ -304,6 +341,7 @@ public class NavigationPane extends GameGrid
     gp.getPuppet().go(nb);
   }
 
+  // TODO: the method should be put in a separate class
   void prepareBeforeRoll() {
     handBtn.setEnabled(false);
     if (isGameOver)  // First click after game over
@@ -313,6 +351,8 @@ public class NavigationPane extends GameGrid
     }
   }
 
+  // TODO: the method should connect to the ManualDieButton and the Die class
+  // because the method is called when the user clicks on a die button and get the value from the die
   public void buttonClicked(GGButton btn)
   {
     System.out.println("hand button clicked");
@@ -320,6 +360,8 @@ public class NavigationPane extends GameGrid
     roll(getDieValue());
   }
 
+  // TODO: the method should be put in a separate class
+  // TODO: indirection: high cohesion, low coupling
   private void roll(int rollNumber)
   {
     int nb = rollNumber;
@@ -342,6 +384,8 @@ public class NavigationPane extends GameGrid
   {
   }
 
+  // TODO: the method should be put in a separate class
+  // TODO: potentil controller usage, dealing with UI stuffs
   public void checkAuto() {
     if (isAuto) Monitor.wakeUp();
   }
