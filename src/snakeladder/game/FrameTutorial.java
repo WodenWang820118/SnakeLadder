@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Properties;
 
 @SuppressWarnings("serial")
+// the FrameTutorial is the controller to give specific instructions to the system
 public class FrameTutorial extends JFrame
 {
   private final String version = "1.01";
-  
   public FrameTutorial(Properties properties)
   {
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -32,7 +32,7 @@ public class FrameTutorial extends JFrame
     });
 
     pack();  // Must be called before actors are added!
-
+    // TODO: refactor to decouple the GamePane and the NavigationPane
     np.setGamePane(gp);
     np.createGui();
     gp.setNavigationPane(np);

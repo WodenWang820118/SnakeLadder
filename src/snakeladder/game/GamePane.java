@@ -1,107 +1,45 @@
 package snakeladder.game;
-
-import ch.aplu.jgamegrid.*;
-import snakeladder.utility.PropertiesLoader;
-
-import java.util.ArrayList;
+// java utility modules
 import java.util.List;
 import java.util.Properties;
+// game utility modules
+import ch.aplu.jgamegrid.Location;
+import ch.aplu.jgamegrid.GameGrid;
 
+/**
+ * The class is served as a view
+ */
 @SuppressWarnings("serial")
-public class GamePane extends GameGrid
-{
-  private NavigationPane np;
-  private int numberOfPlayers = 1;
-  private int currentPuppetIndex = 0;
-  private List<Puppet> puppets =  new ArrayList<>();
-  private List<Boolean> playerManualMode;
-  private ArrayList<Connection> connections = new ArrayList<Connection>();
+public class GamePane extends GameGrid {
+  
   final Location startLocation = new Location(-1, 9);  // outside grid
-  final int animationStep = 10;
   public static final int NUMBER_HORIZONTAL_CELLS = 10;
   public static final int NUMBER_VERTICAL_CELLS = 10;
   private final int MAX_PUPPET_SPRITES = 4;
+  final int animationStep = 10; // TODO: shouldn't be here. It's used in the Puppet class
 
-  GamePane(Properties properties)
-  {
+  // the controller uses the model to display the view
+  private GamePaneModel model;
+
+  GamePane(Properties properties) { 
+    // instantiate the model
+    this.model = new GamePaneModel(properties);
+    this.initGame(properties);
+  }
+
+  public void initGame(Properties properties) {
     setSimulationPeriod(100);
     setBgImagePath("sprites/gamepane_blank.png");
     setCellSize(60);
     setNbHorzCells(NUMBER_HORIZONTAL_CELLS);
     setNbHorzCells(NUMBER_VERTICAL_CELLS);
     doRun();
-    createSnakesLadders(properties);
-    setupPlayers(properties);
+    this.model.createSnakesLadders(properties);
+    this.model.setupPlayers(properties);
     setBgImagePath("sprites/gamepane_snakeladder.png");
   }
 
-  void setupPlayers(Properties properties) {
-    numberOfPlayers = Integer.parseInt(properties.getProperty("players.count"));
-    playerManualMode = new ArrayList<>();
-    for (int i = 0; i < numberOfPlayers; i++) {
-      playerManualMode.add(Boolean.parseBoolean(properties.getProperty("players." + i + ".isAuto")));
-    }
-    System.out.println("playerManualMode = " + playerManualMode);
-  }
-
-  void createSnakesLadders(Properties properties) {
-    connections.addAll(PropertiesLoader.loadSnakes(properties));
-    connections.addAll(PropertiesLoader.loadLadders(properties));
-  }
-
-  void setNavigationPane(NavigationPane np)
-  {
-    this.np = np;
-  }
-
-  void createGui()
-  {
-    for (int i = 0; i < numberOfPlayers; i++) {
-      boolean isAuto = playerManualMode.get(i);
-      int spriteImageIndex = i % MAX_PUPPET_SPRITES;
-      String puppetImage = "sprites/cat_" + spriteImageIndex + ".gif";
-
-      Puppet puppet = new Puppet(this, np, puppetImage);
-      puppet.setAuto(isAuto);
-      puppet.setPuppetName("Player " + (i + 1));
-      addActor(puppet, startLocation);
-      puppets.add(puppet);
-    }
-  }
-
-  Puppet getPuppet()
-  {
-    return puppets.get(currentPuppetIndex);
-  }
-
-  void switchToNextPuppet() {
-    currentPuppetIndex = (currentPuppetIndex + 1) % numberOfPlayers;
-  }
-
-  List<Puppet> getAllPuppets() {
-    return puppets;
-  }
-
-  void resetAllPuppets() {
-    for (Puppet puppet: puppets) {
-      puppet.resetToStartingPoint();
-    }
-  }
-
-  public int getNumberOfPlayers() {
-    return numberOfPlayers;
-  }
-
-  Connection getConnectionAt(Location loc)
-  {
-    for (Connection con : connections)
-      if (con.locStart.equals(loc))
-        return con;
-    return null;
-  }
-
-  static Location cellToLocation(int cellIndex)
-  {
+  static Location cellToLocation(int cellIndex) {
     int index = cellIndex - 1;  // 0..99
 
     int tens = index / NUMBER_HORIZONTAL_CELLS;
@@ -117,9 +55,8 @@ public class GamePane extends GameGrid
 
     return new Location(x, y);
   }
-  
-  int x(int y, Connection con)
-  {
+
+  int x(int y, Connection con) {
     int x0 = toPoint(con.locStart).x;
     int y0 = toPoint(con.locStart).y;
     int x1 = toPoint(con.locEnd).x;
@@ -130,4 +67,49 @@ public class GamePane extends GameGrid
     return (int)(a * y + b);
   }
 
+  void setNavigationPane(NavigationPane np) {
+    this.model.setNavigationPane(np);
+  }
+
+  void createGui() {
+    for (int i = 0; i < this.model.getNumberOfPlayers(); i++) {
+      boolean isAuto = this.model.getPlayerManualMode().get(i);
+      int spriteImageIndex = i % MAX_PUPPET_SPRITES;
+      String puppetImage = "sprites/cat_" + spriteImageIndex + ".gif";
+      Puppet puppet = new Puppet(this, this.model.getNavigationPane(), puppetImage);
+      puppet.setAuto(isAuto);
+      puppet.setPuppetName("Player " + (i + 1));
+      addActor(puppet, startLocation);
+      this.model.getPuppets().add(puppet);
+    }
+  }
+
+  Connection getConnectionAt(Location loc) {
+    for (Connection con : this.model.getConnections())
+      if (con.locStart.equals(loc))
+        return con;
+    return null;
+  }
+
+  public int getNumberOfPlayers() {
+    return this.model.getNumberOfPlayers();
+  }
+
+  Puppet getPuppet() {
+    return this.model.getPuppets().get(this.model.getCurrentPuppetIndex());
+  }
+
+  void switchToNextPuppet() {
+    this.model.setCurrentPuppetIndex((this.model.getCurrentPuppetIndex() + 1) % this.model.getNumberOfPlayers());
+  }
+
+  List<Puppet> getAllPuppets() {
+    return this.model.getPuppets();
+  }
+
+  void resetAllPuppets() {
+    for (Puppet puppet: this.model.getPuppets()) {
+      puppet.resetToStartingPoint();
+    }
+  }
 }
