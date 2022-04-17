@@ -1,10 +1,10 @@
-package snakeladder.game;
+package snakeladder.game.pane.navigationpane;
 
 import ch.aplu.jgamegrid.GGTextField;
 
 public class StatusModel {
-  public StatusModel() {
-  }
+  
+  public StatusModel() {}
 
   public void showPips(GGTextField pipsField, String text) {
     pipsField.setText(text);
@@ -21,7 +21,7 @@ public class StatusModel {
     System.out.println(text);
   }
 
-  void showResult(GGTextField resultField, String text) {
+  public void showResult(GGTextField resultField, String text) {
     resultField.setText(text);
     System.out.println("Result: " + text);
   }

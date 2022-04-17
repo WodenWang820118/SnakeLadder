@@ -1,23 +1,22 @@
-package snakeladder.game;
+package snakeladder.game.pane;
 
 import ch.aplu.jgamegrid.Location;
+import snakeladder.game.pane.gamepane.GamePane;
 
-public abstract class Connection
-{
-  Location locStart;
-  Location locEnd;
-  int cellStart;
-  int cellEnd;
+public abstract class Connection {
+  
+  private Location locStart;
+  private Location locEnd;
+  private int cellStart;
+  private int cellEnd;
+  private String imagePath;
 
-  Connection(int cellStart, int cellEnd)
-  {
+  protected Connection(int cellStart, int cellEnd) {
     this.cellStart = cellStart;
     this.cellEnd = cellEnd;
     locStart = GamePane.cellToLocation(cellStart);
     locEnd = GamePane.cellToLocation(cellEnd);
   }
-
-  String imagePath;
 
   public Location getLocStart() {
     return locStart;
@@ -25,6 +24,14 @@ public abstract class Connection
 
   public Location getLocEnd() {
     return locEnd;
+  }
+
+  public int getCellStart() {
+    return cellStart;
+  }
+
+  public int getCellEnd() {
+    return cellEnd;
   }
 
   public String getImagePath() {

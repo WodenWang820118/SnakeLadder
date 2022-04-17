@@ -6,7 +6,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import snakeladder.game.*;
+import snakeladder.game.pane.Connection;
+
 import static java.lang.Math.acos;
 
 public class BackgroundDrawing {

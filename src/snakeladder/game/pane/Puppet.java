@@ -1,25 +1,46 @@
-package snakeladder.game;
+package snakeladder.game.pane;
 
-import ch.aplu.jgamegrid.*;
+import ch.aplu.jgamegrid.Actor;
+import ch.aplu.jgamegrid.GGSound;
+import ch.aplu.jgamegrid.Location;
+import snakeladder.game.pane.gamepane.GamePane;
+import snakeladder.game.pane.gamepane.GamePaneModel;
+import snakeladder.game.pane.gamepane.Snake;
+import snakeladder.game.pane.navigationpane.NavigationPane;
+import snakeladder.game.pane.navigationpane.NavigationPaneModel;
+import snakeladder.game.pane.navigationpane.StatusModel;
+
 import java.awt.Point;
 
 public class Puppet extends Actor {
 
   // fields
+  final int animationStep = 10;
   private boolean isAuto;
   private int cellIndex = 0;
   private int nbSteps;
   private int y;
   private int dy;
   private String puppetName;
-  
+
   // components
   private Connection currentCon = null;
-  private NavigationPaneModel npModel;
 
-  Puppet(NavigationPaneModel npModel, String puppetImage) {
+  // TODO: because of act method, for now, we need to pass the PaneController
+  // it needs to be refactored after
+  private PaneController paneController;
+  private GamePaneModel gpModel = this.paneController.getGamePaneModel();
+  private NavigationPaneModel npModel = this.paneController.getNavigationPaneModel();
+  private GamePane gp = this.paneController.getGamePane();
+  private NavigationPane np = this.paneController.getNavigationPane();
+  private StatusModel statusModel = this.paneController.getStatusModel();
+
+  public Puppet(String puppetImage) {
     super(puppetImage);
-    this.npModel = npModel;
+  }
+
+  public void setPaneController(PaneController paneController) {
+    this.paneController = paneController;
   }
 
   public boolean isAuto() {
@@ -38,22 +59,22 @@ public class Puppet extends Actor {
     this.puppetName = puppetName;
   }
 
-  void go(int nbSteps) {
+  public void go(int nbSteps) {
     if (cellIndex == 100) {
       cellIndex = 0;
-      setLocation(npModel.gp.startLocation);
+      setLocation(gp.getStartLoction());
     }
     this.nbSteps = nbSteps;
     setActEnabled(true);
   }
 
-  void resetToStartingPoint() {
+  public void resetToStartingPoint() {
     cellIndex = 0;
-    setLocation(npModel.gp.startLocation);
+    setLocation(gp.getStartLoction());
     setActEnabled(true);
   }
 
-  int getCellIndex() {
+  public int getCellIndex() {
     return cellIndex;
   }
 
@@ -78,6 +99,7 @@ public class Puppet extends Actor {
     cellIndex++;
   }
 
+  // TODO: might need to refactor the method
   public void act() {
     if ((cellIndex / 10) % 2 == 0) {
       if (isHorzMirror()) {
@@ -91,20 +113,20 @@ public class Puppet extends Actor {
 
     // Animation: Move on connection
     if (currentCon != null) {
-      int x = npModel.gp.x(y, currentCon);
+      int x = gp.x(y, currentCon);
       setPixelLocation(new Point(x, y));
       y += dy;
 
       // Check end of connection
-      if ((dy > 0 && (y - npModel.gp.toPoint(currentCon.locEnd).y) > 0)
-        || (dy < 0 && (y - npModel.gp.toPoint(currentCon.locEnd).y) < 0)) {
-        npModel.gp.setSimulationPeriod(100);
+      if ((dy > 0 && (y - gp.toPoint(currentCon.getLocEnd()).y) > 0)
+        || (dy < 0 && (y - gp.toPoint(currentCon.getLocEnd()).y) < 0)) {
+        gp.setSimulationPeriod(100);
         setActEnabled(false);
-        setLocation(currentCon.locEnd);
-        cellIndex = currentCon.cellEnd;
+        setLocation(currentCon.getLocEnd());
+        cellIndex = currentCon.getCellEnd();
         setLocationOffset(new Point(0, 0));
         currentCon = null;
-        npModel.prepareRoll(cellIndex);
+        paneController.prepareRoll(cellIndex);
       }
       return;
     }
@@ -116,33 +138,33 @@ public class Puppet extends Actor {
       // Game over
       if (cellIndex == 100) {
         setActEnabled(false);
-        npModel.prepareRoll(cellIndex);
+        paneController.prepareRoll(cellIndex);
         return;
       }
 
       nbSteps--;
       if (nbSteps == 0) {
         // Check if on connection start
-        if ((currentCon = npModel.gp.getConnectionAt(getLocation())) != null) {
-          npModel.gp.setSimulationPeriod(50);
-          y = npModel.gp.toPoint(currentCon.locStart).y;
+        if ((currentCon = gpModel.getConnectionAt(getLocation())) != null) {
+          gp.setSimulationPeriod(50);
+          y = gp.toPoint(currentCon.getLocStart()).y;
 
-          if (currentCon.locEnd.y > currentCon.locStart.y) {
-            dy = npModel.gp.animationStep;
+          if (currentCon.getLocEnd().y > currentCon.getLocStart().y) {
+            dy = animationStep;
           } else {
-            dy = npModel.gp.animationStep;
+            dy = animationStep;
           }
             
           if (currentCon instanceof Snake) {
-            npModel.statusModel.showStatus(npModel.np.getStatusField(), "Digesting...");
+            statusModel.showStatus(np.getStatusField(), "Digesting...");
             npModel.playSound(GGSound.MMM);
           } else {
-            npModel.statusModel.showStatus(npModel.np.getStatusField(), "Climbing...");
+            statusModel.showStatus(np.getStatusField(), "Climbing...");
             npModel.playSound(GGSound.BOING);
           }
         } else {
           setActEnabled(false);
-          npModel.prepareRoll(cellIndex);
+          paneController.prepareRoll(cellIndex);
         }
       }
     }

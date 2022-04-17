@@ -1,14 +1,24 @@
-package snakeladder.game;
+package snakeladder.game.pane.navigationpane;
 
-import ch.aplu.jgamegrid.*;
-import java.awt.*;
-import ch.aplu.util.*;
-import snakeladder.game.custom.CustomGGButton;
-
+import java.awt.Font;
 import java.util.Properties;
+
+import ch.aplu.jgamegrid.Actor;
+import ch.aplu.jgamegrid.GGButton;
+import ch.aplu.jgamegrid.GGButtonListener;
+import ch.aplu.jgamegrid.GGCheckButton;
+import ch.aplu.jgamegrid.GGCheckButtonListener;
+import ch.aplu.jgamegrid.GGTextField;
+import ch.aplu.jgamegrid.GameGrid;
+import ch.aplu.jgamegrid.Location;
+import ch.aplu.util.Monitor;
+import snakeladder.game.custom.CustomGGButton;
+import snakeladder.game.pane.PaneController;
+import snakeladder.game.pane.navigationpane.die.DieModel;
 
 @SuppressWarnings("serial")
 public class NavigationPane extends GameGrid implements GGButtonListener {
+  
   // regarding dice
   private final int DIE1_BUTTON_TAG = 1;
   private final int DIE2_BUTTON_TAG = 2;
@@ -61,25 +71,13 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
   new GGCheckButton("Toggle Mode", YELLOW, TRANSPARENT, isToggle);
   private final Location toggleModeLocation = new Location(95, 375);
 
-  // components
-  public NavigationPaneModel navigationPaneModel; // public for setting the callback for now
-  private DieModel dieModel;
-  private StatusModel statusModel;
+  private PaneController paneController;
+  private ManualDieButton manualDieButton = paneController.getManualDieButton();
+  private DieModel dieModel = paneController.getDieModel();
 
-  NavigationPane(Properties properties) {
-    this.dieModel = new DieModel(properties);
-    this.dieModel.setupDieValues();
+  public NavigationPane(Properties properties) {}
 
-    this.navigationPaneModel = new NavigationPaneModel();
-    this.navigationPaneModel.connectNavigationPane(this);
-
-    this.statusModel = new StatusModel();
-
-    this.initNavigationPane(properties);
-    new SimulatedPlayer(this, navigationPaneModel, dieModel).start();
-  }
-
-  private void initNavigationPane(Properties properties) {
+  public void initNavigationPane(Properties properties) {
     int numberOfDice =  //Number of six-sided dice
             (properties.getProperty("dice.count") == null)
                     ? 1  // default
@@ -96,7 +94,7 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
     doRun();
   }
 
-  void createGui() {
+  public void createGui() {
     addActor(new Actor("sprites/dieboard.gif"), dieBoardLocation);
 
     handBtn.addButtonListener(this);
@@ -145,8 +143,16 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
     resultField.show();
   }
 
+  // public void setManualButtonDie() {
+  //   this.manualDieButton = new ManualDieButton();
+  // }
+
+  public void setPaneController(PaneController paneController) {
+    this.paneController = paneController;
+  }
+
   void addDieButtons() {
-    ManualDieButton manualDieButton = new ManualDieButton(this.navigationPaneModel);
+    // ManualDieButton manualDieButton = new ManualDieButton();
 
     addActor(die1Button, die1Location);
     addActor(die2Button, die2Location);
@@ -190,32 +196,15 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
   public Location getDieBoardLocation() {
     return dieBoardLocation;
   }
-
-  public StatusModel getStatusModel() {
-    return statusModel;
-  }
-
-  // TODO: decouple the method from the Puppet class
-  void prepareRoll(int currentIndex) {
-    this.navigationPaneModel.prepareRoll(currentIndex);
-  }
   
   public void checkAuto() {
     if (isAuto) Monitor.wakeUp();
   }
 
-  // because the method is called when the user clicks on a die button and get the value from the die
   public void buttonClicked(GGButton btn) {
     System.out.println("hand button clicked");
-    this.navigationPaneModel.prepareBeforeRoll();
-    this.navigationPaneModel.roll(getDieValue());
-  }
-
-  // TODO: have decoupled the gamePane and the navigationPane, remove it after
-  void setGamePane(GamePane gp) {
-    // this.gp = gp;
-    // // when initializing the game, the method will call the setupDieValues() method
-    // this.dieModel.setupDieValues();
+    paneController.prepareBeforeRoll();
+    paneController.roll(getDieValue());
   }
 
   public void buttonPressed(GGButton btn) {
