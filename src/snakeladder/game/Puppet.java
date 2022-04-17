@@ -3,23 +3,23 @@ package snakeladder.game;
 import ch.aplu.jgamegrid.*;
 import java.awt.Point;
 
-public class Puppet extends Actor
-{
-  private GamePane gamePane;
-  private NavigationPane navigationPane;
+public class Puppet extends Actor {
+
+  // fields
+  private boolean isAuto;
   private int cellIndex = 0;
   private int nbSteps;
-  private Connection currentCon = null;
   private int y;
   private int dy;
-  private boolean isAuto;
   private String puppetName;
+  
+  // components
+  private Connection currentCon = null;
+  private NavigationPaneModel npModel;
 
-  Puppet(GamePane gp, NavigationPane np, String puppetImage)
-  {
+  Puppet(NavigationPaneModel npModel, String puppetImage) {
     super(puppetImage);
-    this.gamePane = gp;
-    this.navigationPane = np;
+    this.npModel = npModel;
   }
 
   public boolean isAuto() {
@@ -38,12 +38,10 @@ public class Puppet extends Actor
     this.puppetName = puppetName;
   }
 
-  void go(int nbSteps)
-  {
-    if (cellIndex == 100)  // after game over
-    {
+  void go(int nbSteps) {
+    if (cellIndex == 100) {
       cellIndex = 0;
-      setLocation(gamePane.startLocation);
+      setLocation(npModel.gp.startLocation);
     }
     this.nbSteps = nbSteps;
     setActEnabled(true);
@@ -51,7 +49,7 @@ public class Puppet extends Actor
 
   void resetToStartingPoint() {
     cellIndex = 0;
-    setLocation(gamePane.startLocation);
+    setLocation(npModel.gp.startLocation);
     setActEnabled(true);
   }
 
@@ -59,104 +57,94 @@ public class Puppet extends Actor
     return cellIndex;
   }
 
-  private void moveToNextCell()
-  {
+  private void moveToNextCell() {
     int tens = cellIndex / 10;
     int ones = cellIndex - tens * 10;
-    if (tens % 2 == 0)     // Cells starting left 01, 21, .. 81
-    {
-      if (ones == 0 && cellIndex > 0)
+    // Cells starting left 01, 21, .. 81
+    if (tens % 2 == 0) {
+      if (ones == 0 && cellIndex > 0) {
         setLocation(new Location(getX(), getY() - 1));
-      else
+      } else {
         setLocation(new Location(getX() + 1, getY()));
-    }
-    else     // Cells starting left 20, 40, .. 100
-    {
-      if (ones == 0)
+      } 
+    } else {
+      // Cells starting left 20, 40, .. 100
+      if (ones == 0) {
         setLocation(new Location(getX(), getY() - 1));
-      else
+      } else {
         setLocation(new Location(getX() - 1, getY()));
+      } 
     }
     cellIndex++;
   }
 
-  public void act()
-  {
-    if ((cellIndex / 10) % 2 == 0)
-    {
-      if (isHorzMirror())
+  public void act() {
+    if ((cellIndex / 10) % 2 == 0) {
+      if (isHorzMirror()) {
         setHorzMirror(false);
-    }
-    else
-    {
-      if (!isHorzMirror())
+      }
+    } else {
+      if (!isHorzMirror()) {
         setHorzMirror(true);
+      }
     }
 
     // Animation: Move on connection
-    if (currentCon != null)
-    {
-      int x = gamePane.x(y, currentCon);
+    if (currentCon != null) {
+      int x = npModel.gp.x(y, currentCon);
       setPixelLocation(new Point(x, y));
       y += dy;
 
       // Check end of connection
-      if ((dy > 0 && (y - gamePane.toPoint(currentCon.locEnd).y) > 0)
-        || (dy < 0 && (y - gamePane.toPoint(currentCon.locEnd).y) < 0))
-      {
-        gamePane.setSimulationPeriod(100);
+      if ((dy > 0 && (y - npModel.gp.toPoint(currentCon.locEnd).y) > 0)
+        || (dy < 0 && (y - npModel.gp.toPoint(currentCon.locEnd).y) < 0)) {
+        npModel.gp.setSimulationPeriod(100);
         setActEnabled(false);
         setLocation(currentCon.locEnd);
         cellIndex = currentCon.cellEnd;
         setLocationOffset(new Point(0, 0));
         currentCon = null;
-        navigationPane.prepareRoll(cellIndex);
+        npModel.prepareRoll(cellIndex);
       }
       return;
     }
-
+  
     // Normal movement
-    if (nbSteps > 0)
-    {
+    if (nbSteps > 0) {
       moveToNextCell();
 
-      if (cellIndex == 100)  // Game over
-      {
+      // Game over
+      if (cellIndex == 100) {
         setActEnabled(false);
-        navigationPane.prepareRoll(cellIndex);
+        npModel.prepareRoll(cellIndex);
         return;
       }
 
       nbSteps--;
-      if (nbSteps == 0)
-      {
+      if (nbSteps == 0) {
         // Check if on connection start
-        if ((currentCon = gamePane.getConnectionAt(getLocation())) != null)
-        {
-          gamePane.setSimulationPeriod(50);
-          y = gamePane.toPoint(currentCon.locStart).y;
-          if (currentCon.locEnd.y > currentCon.locStart.y)
-            dy = gamePane.animationStep;
-          else
-            dy = -gamePane.animationStep;
-          if (currentCon instanceof Snake)
-          {
-            navigationPane.showStatus("Digesting...");
-            navigationPane.playSound(GGSound.MMM);
+        if ((currentCon = npModel.gp.getConnectionAt(getLocation())) != null) {
+          npModel.gp.setSimulationPeriod(50);
+          y = npModel.gp.toPoint(currentCon.locStart).y;
+
+          if (currentCon.locEnd.y > currentCon.locStart.y) {
+            dy = npModel.gp.animationStep;
+          } else {
+            dy = npModel.gp.animationStep;
           }
-          else
-          {
-            navigationPane.showStatus("Climbing...");
-            navigationPane.playSound(GGSound.BOING);
+            
+          if (currentCon instanceof Snake) {
+            npModel.statusModel.showStatus(npModel.np.getStatusField(), "Digesting...");
+            npModel.playSound(GGSound.MMM);
+          } else {
+            npModel.statusModel.showStatus(npModel.np.getStatusField(), "Climbing...");
+            npModel.playSound(GGSound.BOING);
           }
-        }
-        else
-        {
+        } else {
           setActEnabled(false);
-          navigationPane.prepareRoll(cellIndex);
+          npModel.prepareRoll(cellIndex);
         }
       }
     }
   }
-
 }

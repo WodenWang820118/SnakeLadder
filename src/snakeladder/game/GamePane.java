@@ -20,10 +20,13 @@ public class GamePane extends GameGrid {
 
   // the controller uses the model to display the view
   private GamePaneModel model;
+  private NavigationPaneModel npModel;
 
   GamePane(Properties properties) { 
     // instantiate the model
     this.model = new GamePaneModel(properties);
+    this.npModel = new NavigationPaneModel();
+    this.npModel.connectGamePane(this);
     this.initGame(properties);
   }
 
@@ -76,7 +79,7 @@ public class GamePane extends GameGrid {
       boolean isAuto = this.model.getPlayerManualMode().get(i);
       int spriteImageIndex = i % MAX_PUPPET_SPRITES;
       String puppetImage = "sprites/cat_" + spriteImageIndex + ".gif";
-      Puppet puppet = new Puppet(this, this.model.getNavigationPane(), puppetImage);
+      Puppet puppet = new Puppet(this.npModel, puppetImage);
       puppet.setAuto(isAuto);
       puppet.setPuppetName("Player " + (i + 1));
       addActor(puppet, startLocation);
@@ -91,22 +94,27 @@ public class GamePane extends GameGrid {
     return null;
   }
 
+  // TODO: decouple the model from the view
   public int getNumberOfPlayers() {
     return this.model.getNumberOfPlayers();
   }
 
+  // TODO: decouple the model from the view
   Puppet getPuppet() {
     return this.model.getPuppets().get(this.model.getCurrentPuppetIndex());
   }
 
+  // TODO: decouple the model from the view
   void switchToNextPuppet() {
     this.model.setCurrentPuppetIndex((this.model.getCurrentPuppetIndex() + 1) % this.model.getNumberOfPlayers());
   }
 
+  // TODO: decouple the model from the view
   List<Puppet> getAllPuppets() {
     return this.model.getPuppets();
   }
 
+  // TODO: decouple the model from the view
   void resetAllPuppets() {
     for (Puppet puppet: this.model.getPuppets()) {
       puppet.resetToStartingPoint();

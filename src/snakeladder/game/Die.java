@@ -2,26 +2,21 @@ package snakeladder.game;
 
 import ch.aplu.jgamegrid.Actor;
 
-public class Die extends Actor
-{
-  private NavigationPane np;
+public class Die extends Actor {
+  private NavigationPaneModel npModel;
   private int nb;
 
-  Die(int nb, NavigationPane np)
-  {
+  Die(int nb, NavigationPaneModel npModel) {
     super("sprites/pips" + nb + ".gif", 7);
     this.nb = nb;
-    this.np = np;
+    this.npModel = npModel;
   }
 
-  public void act()
-  {
+  public void act() {
     showNextSprite();
-    if (getIdVisible() == 6)
-    {
+    if (getIdVisible() == 6) {
       setActEnabled(false);
-      np.startMoving(nb);
+      this.npModel.startMoving(nb);
     }
   }
-
 }

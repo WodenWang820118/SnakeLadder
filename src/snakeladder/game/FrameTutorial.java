@@ -24,7 +24,7 @@ public class FrameTutorial extends JFrame
     getContentPane().add(gp, BorderLayout.WEST);
     NavigationPane np = new NavigationPane(properties);
     getContentPane().add(np, BorderLayout.EAST);
-    np.setGamePlayCallback(new GamePlayCallback() {
+    np.navigationPaneModel.setGamePlayCallback(new GamePlayCallback() {
       @Override
       public void finishGameWithResults(int winningPlayerIndex, List<String> playerCurrentPositions) {
        System.out.println("DO NOT CHANGE THIS LINE---WINNING INFORMATION: " + winningPlayerIndex + "-" + String.join(",", playerCurrentPositions));
