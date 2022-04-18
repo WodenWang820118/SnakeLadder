@@ -2,7 +2,6 @@ package snakeladder.game.pane.navigationpane;
 
 import java.util.Properties;
 
-import ch.aplu.jgamegrid.Actor;
 import ch.aplu.jgamegrid.GGButton;
 import ch.aplu.jgamegrid.GGButtonListener;
 import ch.aplu.jgamegrid.GGCheckButton;
@@ -19,22 +18,20 @@ import snakeladder.game.pane.navigationpane.status.StatusUI;
 @SuppressWarnings("serial")
 public class NavigationPane extends GameGrid implements GGButtonListener {
 
-  private final Location dieBoardLocation = new Location(100, 180);
-
-  // regarding hand animation
-  private GGButton handBtn = new GGButton("sprites/handx.gif");
-  private final Location handBtnLocation = new Location(110, 70);
-
-  // regarding checkboxes and toggle buttons
+  // fields
   private boolean isAuto;
-  private GGCheckButton autoChk;
   private boolean isToggle = false;
 
-  private final Location autoChkLocation = new Location(15, 375);
+  // regarding hand animation
+  private final Location handBtnLocation = new Location(110, 70);
+  private GGButton handBtn = new GGButton("sprites/handx.gif");
 
+  // regarding checkboxes and toggle buttons
+  private final Location autoChkLocation = new Location(15, 375);
+  private final Location toggleModeLocation = new Location(95, 375);
+  private GGCheckButton autoChk;
   private GGCheckButton toggleCheck =
   new GGCheckButton("Toggle Mode", YELLOW, TRANSPARENT, isToggle);
-  private final Location toggleModeLocation = new Location(95, 375);
 
   // controller, model and UI views
   private PaneController paneController;
@@ -63,7 +60,8 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
   }
 
   public void createGui() {
-    addActor(new Actor("sprites/dieboard.gif"), dieBoardLocation);
+    dieUI.addDieButtons();
+    statusUI.addStatusFields();
 
     handBtn.addButtonListener(this);
     addActor(handBtn, handBtnLocation);
@@ -84,9 +82,6 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
         isToggle = checked;
       }
     });
-
-    dieUI.addDieButtons();
-    statusUI.addStatusFields();
   }
 
   public void setPaneController(PaneController paneController) {
@@ -118,7 +113,7 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
   }
 
   public Location getDieBoardLocation() {
-    return dieBoardLocation;
+    return dieUI.getDieBoardLocation();
   }
   
   public void checkAuto() {

@@ -1,5 +1,6 @@
 package snakeladder.game.pane.navigationpane.die;
 
+import ch.aplu.jgamegrid.Actor;
 import ch.aplu.jgamegrid.GGButton;
 import ch.aplu.jgamegrid.GameGrid;
 import ch.aplu.jgamegrid.Location;
@@ -21,6 +22,7 @@ public class DieUI extends GameGrid {
   private GGButton die5Button = new CustomGGButton(DIE5_BUTTON_TAG, "sprites/Number_5.png");
   private GGButton die6Button = new CustomGGButton(DIE6_BUTTON_TAG, "sprites/Number_6.png");
 
+  private final Location dieBoardLocation = new Location(100, 180);
   private final Location die1Location = new Location(20, 270);
   private final Location die2Location = new Location(50, 270);
   private final Location die3Location = new Location(80, 270);
@@ -32,6 +34,7 @@ public class DieUI extends GameGrid {
 
   public DieUI(ManualDieButton manualDieButton) {
     this.manualDieButton = manualDieButton;
+    addActor(new Actor("sprites/dieboard.gif"), dieBoardLocation);
   }
 
   public void addDieButtons() {
@@ -48,5 +51,9 @@ public class DieUI extends GameGrid {
     die4Button.addButtonListener(manualDieButton);
     die5Button.addButtonListener(manualDieButton);
     die6Button.addButtonListener(manualDieButton);
+  }
+
+  public Location getDieBoardLocation() {
+    return dieBoardLocation;
   }
 }
