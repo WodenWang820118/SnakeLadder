@@ -1,12 +1,15 @@
 package snakeladder.utility;
 
 import javax.imageio.ImageIO;
+
+import snakeladder.game.pane.gamepane.Connection;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import snakeladder.game.*;
+
 import static java.lang.Math.acos;
 
 public class BackgroundDrawing {
