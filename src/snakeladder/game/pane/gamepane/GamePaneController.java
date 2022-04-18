@@ -3,10 +3,9 @@ package snakeladder.game.pane.gamepane;
 import java.util.List;
 import java.util.Properties;
 
-import ch.aplu.jgamegrid.GameGrid;
 import snakeladder.game.pane.Puppet;
 
-public class GamePaneController extends GameGrid {
+public class GamePaneController {
 
   // view
   private GamePane gp;

@@ -1,7 +1,6 @@
-package snakeladder.game.pane;
+package snakeladder.game.pane.gamepane;
 
 import ch.aplu.jgamegrid.Location;
-import snakeladder.game.pane.gamepane.GamePane;
 
 public abstract class Connection {
   

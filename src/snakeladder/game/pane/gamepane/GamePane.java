@@ -3,7 +3,6 @@ package snakeladder.game.pane.gamepane;
 import java.util.Properties;
 
 import ch.aplu.jgamegrid.Location;
-import snakeladder.game.pane.Connection;
 import ch.aplu.jgamegrid.GameGrid;
 
 @SuppressWarnings("serial")

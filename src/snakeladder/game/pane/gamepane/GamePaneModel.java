@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import ch.aplu.jgamegrid.GameGrid;
 import ch.aplu.jgamegrid.Location;
-import snakeladder.game.pane.Connection;
 import snakeladder.game.pane.Puppet;
 import snakeladder.utility.PropertiesLoader;
 
-public class GamePaneModel extends GameGrid {
+public class GamePaneModel {
 
   private int numberOfPlayers = 1;
   private int currentPuppetIndex = 0;

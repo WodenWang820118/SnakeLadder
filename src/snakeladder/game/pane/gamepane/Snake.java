@@ -1,6 +1,5 @@
 package snakeladder.game.pane.gamepane;
 
-import snakeladder.game.pane.Connection;
 import snakeladder.utility.BackgroundDrawing;
 import snakeladder.utility.ServicesRandom;
 

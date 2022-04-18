@@ -1,8 +1,6 @@
 package snakeladder.game.pane.navigationpane;
 
-import ch.aplu.jgamegrid.GameGrid;
-
-public class NavigationPaneModel extends GameGrid {
+public class NavigationPaneModel {
 
   private GamePlayCallback gamePlayCallback;
   public NavigationPaneModel() {}

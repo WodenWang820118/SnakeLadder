@@ -143,17 +143,11 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
     resultField.show();
   }
 
-  // public void setManualButtonDie() {
-  //   this.manualDieButton = new ManualDieButton();
-  // }
-
   public void setPaneController(PaneController paneController) {
     this.paneController = paneController;
   }
 
   void addDieButtons() {
-    // ManualDieButton manualDieButton = new ManualDieButton();
-
     addActor(die1Button, die1Location);
     addActor(die2Button, die2Location);
     addActor(die3Button, die3Location);
