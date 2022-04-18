@@ -10,8 +10,8 @@ import snakeladder.game.pane.navigationpane.ManualDieButton;
 import snakeladder.game.pane.navigationpane.NavigationPane;
 import snakeladder.game.pane.navigationpane.NavigationPaneController;
 import snakeladder.game.pane.navigationpane.NavigationPaneModel;
-import snakeladder.game.pane.navigationpane.StatusModel;
 import snakeladder.game.pane.navigationpane.die.DieModel;
+import snakeladder.game.pane.navigationpane.status.StatusModel;
 import snakeladder.utility.PropertiesLoader;
 import snakeladder.utility.ServicesRandom;
 

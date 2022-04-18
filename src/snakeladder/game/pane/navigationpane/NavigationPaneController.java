@@ -3,6 +3,7 @@ package snakeladder.game.pane.navigationpane;
 import java.util.Properties;
 
 import snakeladder.game.pane.navigationpane.die.DieModel;
+import snakeladder.game.pane.navigationpane.status.StatusModel;
 
 public class NavigationPaneController {
 

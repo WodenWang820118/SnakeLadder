@@ -1,4 +1,4 @@
-package snakeladder.game.pane.navigationpane;
+package snakeladder.game.pane.navigationpane.status;
 
 import ch.aplu.jgamegrid.GGTextField;
 

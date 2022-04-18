@@ -8,8 +8,7 @@ import snakeladder.game.pane.gamepane.GamePane;
 import snakeladder.game.pane.gamepane.GamePaneModel;
 import snakeladder.game.pane.gamepane.Snake;
 import snakeladder.game.pane.navigationpane.NavigationPane;
-import snakeladder.game.pane.navigationpane.NavigationPaneModel;
-import snakeladder.game.pane.navigationpane.StatusModel;
+import snakeladder.game.pane.navigationpane.status.StatusModel;
 
 import java.awt.Point;
 
@@ -31,7 +30,6 @@ public class Puppet extends Actor {
   // it needs to be refactored after
   private PaneController paneController;
   private GamePaneModel gpModel = this.paneController.getGamePaneModel();
-  private NavigationPaneModel npModel = this.paneController.getNavigationPaneModel();
   private GamePane gp = this.paneController.getGamePane();
   private NavigationPane np = this.paneController.getNavigationPane();
   private StatusModel statusModel = this.paneController.getStatusModel();
@@ -158,10 +156,10 @@ public class Puppet extends Actor {
             
           if (currentCon instanceof Snake) {
             statusModel.showStatus(np.getStatusField(), "Digesting...");
-            npModel.playSound(GGSound.MMM);
+            paneController.playSound(GGSound.MMM);
           } else {
             statusModel.showStatus(np.getStatusField(), "Climbing...");
-            npModel.playSound(GGSound.BOING);
+            paneController.playSound(GGSound.BOING);
           }
         } else {
           setActEnabled(false);

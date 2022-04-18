@@ -1,6 +1,5 @@
 package snakeladder.game.pane.navigationpane;
 
-import java.awt.Font;
 import java.util.Properties;
 
 import ch.aplu.jgamegrid.Actor;
@@ -12,53 +11,19 @@ import ch.aplu.jgamegrid.GGTextField;
 import ch.aplu.jgamegrid.GameGrid;
 import ch.aplu.jgamegrid.Location;
 import ch.aplu.util.Monitor;
-import snakeladder.game.custom.CustomGGButton;
 import snakeladder.game.pane.PaneController;
 import snakeladder.game.pane.navigationpane.die.DieModel;
+import snakeladder.game.pane.navigationpane.die.DieUI;
+import snakeladder.game.pane.navigationpane.status.StatusUI;
 
 @SuppressWarnings("serial")
 public class NavigationPane extends GameGrid implements GGButtonListener {
-  
-  // regarding dice
-  private final int DIE1_BUTTON_TAG = 1;
-  private final int DIE2_BUTTON_TAG = 2;
-  private final int DIE3_BUTTON_TAG = 3;
-  private final int DIE4_BUTTON_TAG = 4;
-  private final int DIE5_BUTTON_TAG = 5;
-  private final int DIE6_BUTTON_TAG = 6;
-
-  private GGButton die1Button = new CustomGGButton(DIE1_BUTTON_TAG, "sprites/Number_1.png");
-  private GGButton die2Button = new CustomGGButton(DIE2_BUTTON_TAG, "sprites/Number_2.png");
-  private GGButton die3Button = new CustomGGButton(DIE3_BUTTON_TAG, "sprites/Number_3.png");
-  private GGButton die4Button = new CustomGGButton(DIE4_BUTTON_TAG, "sprites/Number_4.png");
-  private GGButton die5Button = new CustomGGButton(DIE5_BUTTON_TAG, "sprites/Number_5.png");
-  private GGButton die6Button = new CustomGGButton(DIE6_BUTTON_TAG, "sprites/Number_6.png");
 
   private final Location dieBoardLocation = new Location(100, 180);
-  private final Location die1Location = new Location(20, 270);
-  private final Location die2Location = new Location(50, 270);
-  private final Location die3Location = new Location(80, 270);
-  private final Location die4Location = new Location(110, 270);
-  private final Location die5Location = new Location(140, 270);
-  private final Location die6Location = new Location(170, 270);
 
   // regarding hand animation
   private GGButton handBtn = new GGButton("sprites/handx.gif");
   private final Location handBtnLocation = new Location(110, 70);
-
-  // regarding textfields
-  private GGTextField pipsField;
-  private GGTextField statusField;
-  private GGTextField resultField;
-  private GGTextField scoreField;
-
-  private final Location pipsLocation = new Location(70, 230);
-  private final Location statusLocation = new Location(20, 330);
-  private final Location statusDisplayLocation = new Location(100, 320);
-  private final Location scoreLocation = new Location(20, 430);
-  private final Location scoreDisplayLocation = new Location(100, 430);
-  private final Location resultLocation = new Location(20, 495);
-  private final Location resultDisplayLocation = new Location(100, 495);
 
   // regarding checkboxes and toggle buttons
   private boolean isAuto;
@@ -71,9 +36,12 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
   new GGCheckButton("Toggle Mode", YELLOW, TRANSPARENT, isToggle);
   private final Location toggleModeLocation = new Location(95, 375);
 
+  // controller, model and UI views
   private PaneController paneController;
   private ManualDieButton manualDieButton = paneController.getManualDieButton();
   private DieModel dieModel = paneController.getDieModel();
+  private DieUI dieUI = new DieUI(manualDieButton);
+  private StatusUI statusUI = new StatusUI(this);
 
   public NavigationPane(Properties properties) {}
 
@@ -117,50 +85,12 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
       }
     });
 
-    addDieButtons();
-
-    pipsField = new GGTextField(this, "", pipsLocation, false);
-    pipsField.setFont(new Font("Arial", Font.PLAIN, 16));
-    pipsField.setTextColor(YELLOW);
-    pipsField.show();
-
-    addActor(new Actor("sprites/linedisplay.gif"), statusDisplayLocation);
-    statusField = new GGTextField(this, "Click the hand!", statusLocation, false);
-    statusField.setFont(new Font("Arial", Font.PLAIN, 16));
-    statusField.setTextColor(YELLOW);
-    statusField.show();
-
-    addActor(new Actor("sprites/linedisplay.gif"), scoreDisplayLocation);
-    scoreField = new GGTextField(this, "# Rolls: 0", scoreLocation, false);
-    scoreField.setFont(new Font("Arial", Font.PLAIN, 16));
-    scoreField.setTextColor(YELLOW);
-    scoreField.show();
-
-    addActor(new Actor("sprites/linedisplay.gif"), resultDisplayLocation);
-    resultField = new GGTextField(this, "Current pos: 0", resultLocation, false);
-    resultField.setFont(new Font("Arial", Font.PLAIN, 16));
-    resultField.setTextColor(YELLOW);
-    resultField.show();
+    dieUI.addDieButtons();
+    statusUI.addStatusFields();
   }
 
   public void setPaneController(PaneController paneController) {
     this.paneController = paneController;
-  }
-
-  void addDieButtons() {
-    addActor(die1Button, die1Location);
-    addActor(die2Button, die2Location);
-    addActor(die3Button, die3Location);
-    addActor(die4Button, die4Location);
-    addActor(die5Button, die5Location);
-    addActor(die6Button, die6Location);
-
-    die1Button.addButtonListener(manualDieButton);
-    die2Button.addButtonListener(manualDieButton);
-    die3Button.addButtonListener(manualDieButton);
-    die4Button.addButtonListener(manualDieButton);
-    die5Button.addButtonListener(manualDieButton);
-    die6Button.addButtonListener(manualDieButton);
   }
 
   private int getDieValue() {
@@ -168,19 +98,19 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
   }
 
   public GGTextField getPipField() {
-    return pipsField;
+    return statusUI.getPipField();
   }
 
   public GGTextField getStatusField() {
-    return statusField;
+    return statusUI.getStatusField();
   }
 
   public GGTextField getResultField() {
-    return resultField;
+    return statusUI.getResultField();
   }
 
   public GGTextField getScoreField() {
-    return scoreField;
+    return statusUI.getScoreField();
   }
 
   public GGButton getHandBtn() {
