@@ -4,6 +4,7 @@ import ch.aplu.jgamegrid.GGButton;
 import ch.aplu.jgamegrid.GGButtonListener;
 import ch.aplu.jgamegrid.Location;
 import snakeladder.game.custom.CustomGGButton;
+import snakeladder.game.pane.navigationpane.NavigationPaneController.ManualDieButton;
 
 public class DieBoard {
   // dice related
@@ -28,8 +29,10 @@ public class DieBoard {
   private GGButton die5Button = new CustomGGButton(DIE5_BUTTON_TAG, "sprites/Number_5.png");
   private GGButton die6Button = new CustomGGButton(DIE6_BUTTON_TAG, "sprites/Number_6.png");
 
+  private ManualDieButton manualDieButton;
+
   void addDieButtons(NavigationPane np) {
-    ManualDieButton manualDieButton = new ManualDieButton();
+    // ManualDieButton manualDieButton = new ManualDieButton();
 
     np.addActor(die1Button, die1Location);
     np.addActor(die2Button, die2Location);
@@ -46,28 +49,7 @@ public class DieBoard {
     die6Button.addButtonListener(manualDieButton);
   }
 
-  class ManualDieButton implements GGButtonListener {
-    @Override
-    public void buttonPressed(GGButton ggButton) {
-
-    }
-
-    @Override
-    public void buttonReleased(GGButton ggButton) {
-
-    }
-
-    // TODO: refactor to access the methods
-    @Override
-    public void buttonClicked(GGButton ggButton) {
-      // System.out.println("manual die button clicked");
-      // if (ggButton instanceof CustomGGButton) {
-      //   CustomGGButton customGGButton = (CustomGGButton) ggButton;
-      //   int tag = customGGButton.getTag();
-      //   System.out.println("manual die button clicked - tag: " + tag);
-      //   prepareBeforeRoll();
-      //   roll(tag);
-      // }
-    }
+  void setManualDieButton(ManualDieButton manualDieButton) {
+    this.manualDieButton = manualDieButton;
   }
 }
