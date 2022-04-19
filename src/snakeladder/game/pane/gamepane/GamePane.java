@@ -3,7 +3,6 @@ package snakeladder.game.pane.gamepane;
 import ch.aplu.jgamegrid.GameGrid;
 import ch.aplu.jgamegrid.Location;
 import snakeladder.game.pane.PaneController;
-import snakeladder.game.pane.Puppet;
 
 import java.util.Properties;
 
@@ -39,21 +38,12 @@ public class GamePane extends GameGrid {
     this.pc = pc;
   }
 
-  public void createGui() {
-    for (int i = 0; i < pc.gpController.getGpModel().getNumberOfPlayers(); i++) {
-      boolean isAuto = pc.gpController.getGpModel().getPlayerManualMode().get(i);
-      int spriteImageIndex = i % pc.gpController.getGpModel().MAX_PUPPET_SPRITES;
-      String puppetImage = "sprites/cat_" + spriteImageIndex + ".gif";
-      Puppet puppet = new Puppet(pc, puppetImage);
-      puppet.setAuto(isAuto);
-      puppet.setPuppetName("Player " + (i + 1));
-      addActor(puppet, startLocation);
-      pc.gpController.getGpModel().getPuppets().add(puppet);
-    }
+  public void createGui(PaneController pc) {
+    pc.getGpModel().createGui(pc);
   }
 
   public Connection getConnectionAt(Location loc) {
-    for (Connection con : pc.gpController.getGpModel().getConnections())
+    for (Connection con : pc.getGpModel().getConnections())
       if (con.getLocStart().equals(loc))
         return con;
     return null;
@@ -86,5 +76,4 @@ public class GamePane extends GameGrid {
     double b = (double)(y1 * x0 - y0 * x1) / (y1 - y0);
     return (int)(a * y + b);
   }
-
 }

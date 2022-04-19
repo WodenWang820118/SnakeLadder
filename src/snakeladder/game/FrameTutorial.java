@@ -59,7 +59,7 @@ public class FrameTutorial extends JFrame {
     pc.getNp().setPaneController(pc);
     pc.createNpGui();
     pc.getGp().setPaneController(pc);
-    pc.createGpGui();
+    pc.createGpGui(pc);
     pc.getNp().checkAuto();
 
   }
