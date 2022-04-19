@@ -1,6 +1,8 @@
 package snakeladder.game.pane;
 
-import ch.aplu.jgamegrid.*;
+import ch.aplu.jgamegrid.Actor;
+import ch.aplu.jgamegrid.GGSound;
+import ch.aplu.jgamegrid.Location;
 import snakeladder.game.pane.gamepane.Connection;
 import snakeladder.game.pane.gamepane.GamePane;
 import snakeladder.game.pane.gamepane.Snake;

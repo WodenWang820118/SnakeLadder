@@ -1,12 +1,7 @@
 package snakeladder.game.pane.gamepane;
 
-/**
- * @author Guan-Xin Wang
- * The GamePane uses the GamePaneModel to store and manipulate the game data.
- * The NavigationPane is used to instantiate the puppet
- */
-
-import ch.aplu.jgamegrid.*;
+import ch.aplu.jgamegrid.GameGrid;
+import ch.aplu.jgamegrid.Location;
 import snakeladder.game.pane.PaneController;
 import snakeladder.game.pane.Puppet;
 
@@ -45,15 +40,11 @@ public class GamePane extends GameGrid {
     this.pc = pc;
   }
 
-  // TODO: refactor after; decouple the puppet class from gp and np
-  // the pc isn't null since the method is called after the pc is set
   public void createGui() {
     for (int i = 0; i < pc.gpController.getGpModel().numberOfPlayers; i++) {
       boolean isAuto = pc.gpController.getGpModel().playerManualMode.get(i);
       int spriteImageIndex = i % MAX_PUPPET_SPRITES;
       String puppetImage = "sprites/cat_" + spriteImageIndex + ".gif";
-
-      // TODO: the puppet here is hard to decouple
       Puppet puppet = new Puppet(pc, puppetImage);
       puppet.setAuto(isAuto);
       puppet.setPuppetName("Player " + (i + 1));

@@ -1,6 +1,13 @@
 package snakeladder.game.pane.navigationpane;
 
-import ch.aplu.jgamegrid.*;
+import ch.aplu.jgamegrid.Actor;
+import ch.aplu.jgamegrid.GGButton;
+import ch.aplu.jgamegrid.GGButtonListener;
+import ch.aplu.jgamegrid.GGCheckButton;
+import ch.aplu.jgamegrid.GGCheckButtonListener;
+import ch.aplu.jgamegrid.GGSound;
+import ch.aplu.jgamegrid.GameGrid;
+import ch.aplu.jgamegrid.Location;
 import ch.aplu.util.*;
 import snakeladder.game.pane.Die;
 import snakeladder.game.pane.GamePlayCallback;

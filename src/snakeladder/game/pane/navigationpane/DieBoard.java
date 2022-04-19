@@ -1,7 +1,6 @@
 package snakeladder.game.pane.navigationpane;
 
 import ch.aplu.jgamegrid.GGButton;
-import ch.aplu.jgamegrid.GGButtonListener;
 import ch.aplu.jgamegrid.Location;
 import snakeladder.game.custom.CustomGGButton;
 import snakeladder.game.pane.navigationpane.NavigationPaneController.ManualDieButton;
