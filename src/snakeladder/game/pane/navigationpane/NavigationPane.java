@@ -3,7 +3,7 @@ package snakeladder.game.pane.navigationpane;
 import ch.aplu.jgamegrid.*;
 import java.awt.*;
 import ch.aplu.util.*;
-import snakeladder.game.custom.CustomGGButton;
+import snakeladder.game.pane.Die;
 import snakeladder.game.pane.GamePlayCallback;
 import snakeladder.game.pane.PaneController;
 import snakeladder.game.pane.Puppet;
@@ -22,42 +22,8 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
   private boolean isToggle = false;
 
   // dice related
-  private final int DIE1_BUTTON_TAG = 1;
-  private final int DIE2_BUTTON_TAG = 2;
-  private final int DIE3_BUTTON_TAG = 3;
-  private final int DIE4_BUTTON_TAG = 4;
-  private final int DIE5_BUTTON_TAG = 5;
-  private final int DIE6_BUTTON_TAG = 6;
   private final int RANDOM_ROLL_TAG = -1;
-
   private final Location dieBoardLocation = new Location(100, 180);
-  private final Location die1Location = new Location(20, 270);
-  private final Location die2Location = new Location(50, 270);
-  private final Location die3Location = new Location(80, 270);
-  private final Location die4Location = new Location(110, 270);
-  private final Location die5Location = new Location(140, 270);
-  private final Location die6Location = new Location(170, 270);
-
-  private GGButton die1Button = new CustomGGButton(DIE1_BUTTON_TAG, "sprites/Number_1.png");
-  private GGButton die2Button = new CustomGGButton(DIE2_BUTTON_TAG, "sprites/Number_2.png");
-  private GGButton die3Button = new CustomGGButton(DIE3_BUTTON_TAG, "sprites/Number_3.png");
-  private GGButton die4Button = new CustomGGButton(DIE4_BUTTON_TAG, "sprites/Number_4.png");
-  private GGButton die5Button = new CustomGGButton(DIE5_BUTTON_TAG, "sprites/Number_5.png");
-  private GGButton die6Button = new CustomGGButton(DIE6_BUTTON_TAG, "sprites/Number_6.png");
-
-  // status related
-  private GGTextField pipsField;
-  private GGTextField statusField;
-  private GGTextField resultField;
-  private GGTextField scoreField;
-
-  private final Location pipsLocation = new Location(70, 230);
-  private final Location statusLocation = new Location(20, 330);
-  private final Location statusDisplayLocation = new Location(100, 320);
-  private final Location scoreLocation = new Location(20, 430);
-  private final Location scoreDisplayLocation = new Location(100, 430);
-  private final Location resultLocation = new Location(20, 495);
-  private final Location resultDisplayLocation = new Location(100, 495);
 
   // animation and toggle location
   private final Location handBtnLocation = new Location(110, 70);
@@ -76,9 +42,13 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
   private GamePaneModel gpModel;
   private NavigationPaneModel npModel;
   private StatusModel statusModel;
+  private DieBoard dieBoard;
+  private StatusBoard statusBoard;
 
-  public NavigationPane(Properties properties) {
+  public NavigationPane(Properties properties, DieBoard dieBoard, StatusBoard statusBoard) {
     this.properties = properties;
+    this.dieBoard = dieBoard;
+    this.statusBoard = statusBoard;
 
     int numberOfDice =  //Number of six-sided dice
             (properties.getProperty("dice.count") == null)
@@ -116,24 +86,7 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
     setupDieValues(gpModel);
   }
 
-  void addDieButtons() {
-    ManualDieButton manualDieButton = new ManualDieButton();
-
-    addActor(die1Button, die1Location);
-    addActor(die2Button, die2Location);
-    addActor(die3Button, die3Location);
-    addActor(die4Button, die4Location);
-    addActor(die5Button, die5Location);
-    addActor(die6Button, die6Location);
-
-    die1Button.addButtonListener(manualDieButton);
-    die2Button.addButtonListener(manualDieButton);
-    die3Button.addButtonListener(manualDieButton);
-    die4Button.addButtonListener(manualDieButton);
-    die5Button.addButtonListener(manualDieButton);
-    die6Button.addButtonListener(manualDieButton);
-  }
-
+  // TODO: should be in dieboard specifically
   public int getDieValue(GamePaneModel gpModel) {
     return npModel.getDieValue(gpModel);
   }
@@ -162,45 +115,20 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
       }
     });
 
-    addDieButtons();
-    addStatusFields();
-  }
-
-  void addStatusFields() {
-    pipsField = new GGTextField(this, "", pipsLocation, false);
-    pipsField.setFont(new Font("Arial", Font.PLAIN, 16));
-    pipsField.setTextColor(YELLOW);
-    pipsField.show();
-
-    addActor(new Actor("sprites/linedisplay.gif"), statusDisplayLocation);
-    statusField = new GGTextField(this, "Click the hand!", statusLocation, false);
-    statusField.setFont(new Font("Arial", Font.PLAIN, 16));
-    statusField.setTextColor(YELLOW);
-    statusField.show();
-
-    addActor(new Actor("sprites/linedisplay.gif"), scoreDisplayLocation);
-    scoreField = new GGTextField(this, "# Rolls: 0", scoreLocation, false);
-    scoreField.setFont(new Font("Arial", Font.PLAIN, 16));
-    scoreField.setTextColor(YELLOW);
-    scoreField.show();
-
-    addActor(new Actor("sprites/linedisplay.gif"), resultDisplayLocation);
-    resultField = new GGTextField(this, "Current pos: 0", resultLocation, false);
-    resultField.setFont(new Font("Arial", Font.PLAIN, 16));
-    resultField.setTextColor(YELLOW);
-    resultField.show();
+    dieBoard.addDieButtons(this);
+    statusBoard.addStatusFields(this);
   }
 
   public void showStatus(String text) {
-    statusModel.showStatus(statusField, text);
+    statusModel.showStatus(statusBoard.statusField, text);
   }
 
   public void prepareRoll(int currentIndex) {
     // Game over
     if (currentIndex == 100) {
       playSound(GGSound.FADE);
-      statusModel.showStatus(statusField, "Click the hand!");
-      statusModel.showResult(resultField, "Game over");
+      statusModel.showStatus(statusBoard.statusField, "Click the hand!");
+      statusModel.showResult(statusBoard.resultField, "Game over");
       npModel.setGameOver(true);
       // isGameOver = true;
       handBtn.setEnabled(true);
@@ -213,9 +141,9 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
       gpModel.resetAllPuppets();
     } else {
       playSound(GGSound.CLICK);
-      statusModel.showStatus(statusField, "Click the hand!");
+      statusModel.showStatus(statusBoard.statusField, "Click the hand!");
       String result = gpModel.getPuppet().getPuppetName() + " - pos: " + currentIndex;
-      statusModel.showResult(resultField, result);
+      statusModel.showResult(statusBoard.resultField, result);
       gpModel.switchToNextPuppet();
       // System.out.println("current puppet - auto: " + gp.getPuppet().getPuppetName() + "  " + gp.getPuppet().isAuto() );
 
@@ -229,12 +157,12 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
     }
   }
 
-  void startMoving(int nb) {
-    statusModel.showStatus(statusField, "Moving...");
-    statusModel.showPips(pipsField, "Pips: " + nb);
+  public void startMoving(int nb) {
+    statusModel.showStatus(statusBoard.statusField, "Moving...");
+    statusModel.showPips(statusBoard.pipsField, "Pips: " + nb);
     int newScore = npModel.getNbRolls() + 1;
     npModel.setNbRolls(newScore);
-    statusModel.showScore(scoreField, "# Rolls: " + newScore);
+    statusModel.showScore(statusBoard.scoreField, "# Rolls: " + newScore);
     gpModel.getPuppet().go(nb);
   }
 
@@ -258,8 +186,8 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
     if (rollNumber == RANDOM_ROLL_TAG) {
       nb = ServicesRandom.get().nextInt(6) + 1;
     }
-    statusModel.showStatus(statusField, "Rolling...");
-    statusModel.showPips(pipsField, "");
+    statusModel.showStatus(statusBoard.statusField, "Rolling...");
+    statusModel.showPips(statusBoard.pipsField, "");
 
     removeActors(Die.class);
     Die die = new Die(nb, this);
@@ -280,29 +208,5 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
 
   public GGButton getHandBtn() {
     return handBtn;
-  }
-
-  class ManualDieButton implements GGButtonListener {
-    @Override
-    public void buttonPressed(GGButton ggButton) {
-
-    }
-
-    @Override
-    public void buttonReleased(GGButton ggButton) {
-
-    }
-
-    @Override
-    public void buttonClicked(GGButton ggButton) {
-      System.out.println("manual die button clicked");
-      if (ggButton instanceof CustomGGButton) {
-        CustomGGButton customGGButton = (CustomGGButton) ggButton;
-        int tag = customGGButton.getTag();
-        System.out.println("manual die button clicked - tag: " + tag);
-        prepareBeforeRoll();
-        roll(tag);
-      }
-    }
   }
 }

@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import snakeladder.game.pane.gamepane.GamePaneModel;
 
+// TODO: why extends the NavigationPane?
 public class NavigationPaneModel extends NavigationPane {
 
   private final int RANDOM_ROLL_TAG = -1;
@@ -13,10 +14,14 @@ public class NavigationPaneModel extends NavigationPane {
   private volatile boolean isGameOver = false;
   private List<List<Integer>> dieValues = new ArrayList<>();
   private Properties properties;
+  private DieBoard dieBoard;
+  private StatusBoard statusBoard;
 
-  public NavigationPaneModel(Properties properties) {
-    super(properties);
+  public NavigationPaneModel(Properties properties, DieBoard dieBoard, StatusBoard statusBoard) {
+    super(properties, dieBoard, statusBoard);
     this.properties = properties;
+    this.dieBoard = dieBoard;
+    this.statusBoard = statusBoard;
   }
 
   public void setupDieValues(GamePaneModel gpModel) {

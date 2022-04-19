@@ -5,9 +5,11 @@ import snakeladder.game.pane.PaneController;
 import snakeladder.game.pane.gamepane.GamePane;
 import snakeladder.game.pane.gamepane.GamePaneController;
 import snakeladder.game.pane.gamepane.GamePaneModel;
+import snakeladder.game.pane.navigationpane.DieBoard;
 import snakeladder.game.pane.navigationpane.NavigationPane;
 import snakeladder.game.pane.navigationpane.NavigationPaneController;
 import snakeladder.game.pane.navigationpane.NavigationPaneModel;
+import snakeladder.game.pane.navigationpane.StatusBoard;
 import snakeladder.game.pane.navigationpane.StatusModel;
 import snakeladder.utility.PropertiesLoader;
 import snakeladder.utility.ServicesRandom;
@@ -27,15 +29,17 @@ public class FrameTutorial extends JFrame {
     setLocation(10, 10);
     setTitle("snakeladder.game.FrameTutorial V" + version +
       ", (Design: Carlo Donzelli, Implementation: Aegidius Pluess)");
-    
-    // instantiate models
-    GamePaneModel gpModel = new GamePaneModel(properties);
-    NavigationPaneModel npModel = new NavigationPaneModel(properties);
-    StatusModel statusModel = new StatusModel();
 
     // instantiate views
+    DieBoard dieBoard = new DieBoard();
+    StatusBoard statusBoard = new StatusBoard();
     GamePane gp = new GamePane(properties);
-    NavigationPane np = new NavigationPane(properties);
+    NavigationPane np = new NavigationPane(properties, dieBoard, statusBoard);
+
+    // instantiate models
+    GamePaneModel gpModel = new GamePaneModel(properties);
+    NavigationPaneModel npModel = new NavigationPaneModel(properties, dieBoard, statusBoard);
+    StatusModel statusModel = new StatusModel();
 
     // instantiate controllers
     GamePaneController gpController = new GamePaneController(gp, gpModel, properties);
