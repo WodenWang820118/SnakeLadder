@@ -14,7 +14,6 @@ public class GamePane extends GameGrid {
   public final int animationStep = 10;
   public static final int NUMBER_HORIZONTAL_CELLS = 10;
   public static final int NUMBER_VERTICAL_CELLS = 10;
-  final int MAX_PUPPET_SPRITES = 4;
 
   // components
   private PaneController pc;
@@ -41,9 +40,9 @@ public class GamePane extends GameGrid {
   }
 
   public void createGui() {
-    for (int i = 0; i < pc.gpController.getGpModel().numberOfPlayers; i++) {
-      boolean isAuto = pc.gpController.getGpModel().playerManualMode.get(i);
-      int spriteImageIndex = i % MAX_PUPPET_SPRITES;
+    for (int i = 0; i < pc.gpController.getGpModel().getNumberOfPlayers(); i++) {
+      boolean isAuto = pc.gpController.getGpModel().getPlayerManualMode().get(i);
+      int spriteImageIndex = i % pc.gpController.getGpModel().MAX_PUPPET_SPRITES;
       String puppetImage = "sprites/cat_" + spriteImageIndex + ".gif";
       Puppet puppet = new Puppet(pc, puppetImage);
       puppet.setAuto(isAuto);

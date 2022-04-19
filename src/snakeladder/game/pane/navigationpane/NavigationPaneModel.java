@@ -51,8 +51,6 @@ public class NavigationPaneModel {
     return RANDOM_ROLL_TAG;
   }
 
-
-
   public List<List<Integer>> getDieValues() {
     return dieValues;
   }

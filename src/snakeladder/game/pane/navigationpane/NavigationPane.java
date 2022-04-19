@@ -66,7 +66,7 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
     initNavigationPane();
   }
 
-  void initNavigationPane() {
+  private void initNavigationPane() {
     setSimulationPeriod(200);
     setBgImagePath("sprites/navigationpane.png");
     setCellSize(1);
@@ -75,7 +75,7 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
     doRun();
   }
 
-  void setupDieValues(GamePaneModel gpModel) {
+  public void setupDieValues(GamePaneModel gpModel) {
     npModel.setupDieValues(gpModel);
   }
 
@@ -122,10 +122,6 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
     statusBoard.addStatusFields(this);
   }
 
-  public void showStatus(String text) {
-    statusBoard.showStatus(text);
-  }
-
   public void prepareRoll(int currentIndex) {
     // Game over
     if (currentIndex == 100) {
@@ -169,7 +165,7 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
     gpModel.getPuppet().go(nb);
   }
 
-  void prepareBeforeRoll() {
+  public void prepareBeforeRoll() {
     handBtn.setEnabled(false);
     // First click after game over
     if (npModel.isGameOver()) {
