@@ -6,20 +6,23 @@ public class NavigationPaneController {
   
   // view
   private NavigationPane np;
+  private DieBoard dieBoard;
+  private StatusBoard statusBoard;
 
   // model
   private NavigationPaneModel npModel;
-  private StatusModel statusModel;
 
   public NavigationPaneController(
     NavigationPane np,
+    DieBoard dieBoard,
+    StatusBoard statusBoard,
     NavigationPaneModel npModel,
-    StatusModel statusModel,
     Properties properties) {
     
     this.np = np;
+    this.dieBoard = dieBoard;
+    this.statusBoard = statusBoard;
     this.npModel = npModel;
-    this.statusModel = statusModel;
   }
     
   public NavigationPane getNp() {
@@ -30,7 +33,11 @@ public class NavigationPaneController {
     return npModel;
   }
 
-  public StatusModel getStatusModel() {
-    return statusModel;
+  public DieBoard getDieBoard() {
+    return dieBoard;
+  }
+
+  public StatusBoard getStatusBoard() {
+    return statusBoard;
   }
 }

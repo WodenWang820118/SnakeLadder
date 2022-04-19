@@ -10,7 +10,6 @@ import snakeladder.game.pane.navigationpane.NavigationPane;
 import snakeladder.game.pane.navigationpane.NavigationPaneController;
 import snakeladder.game.pane.navigationpane.NavigationPaneModel;
 import snakeladder.game.pane.navigationpane.StatusBoard;
-import snakeladder.game.pane.navigationpane.StatusModel;
 import snakeladder.utility.PropertiesLoader;
 import snakeladder.utility.ServicesRandom;
 
@@ -38,12 +37,11 @@ public class FrameTutorial extends JFrame {
 
     // instantiate models
     GamePaneModel gpModel = new GamePaneModel(properties);
-    NavigationPaneModel npModel = new NavigationPaneModel(properties, dieBoard, statusBoard);
-    StatusModel statusModel = new StatusModel();
+    NavigationPaneModel npModel = new NavigationPaneModel(properties);
 
     // instantiate controllers
     GamePaneController gpController = new GamePaneController(gp, gpModel, properties);
-    NavigationPaneController npController = new NavigationPaneController(np, npModel, statusModel, properties);
+    NavigationPaneController npController = new NavigationPaneController(np, dieBoard, statusBoard, npModel, properties);
     PaneController pc = new PaneController(gpController, npController, properties);
 
     getContentPane().add(pc.getGp(), BorderLayout.WEST);

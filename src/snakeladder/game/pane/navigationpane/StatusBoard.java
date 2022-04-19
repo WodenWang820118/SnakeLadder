@@ -7,10 +7,10 @@ import ch.aplu.jgamegrid.Location;
 import java.awt.Font;
 
 public class StatusBoard extends GameGrid {
-  GGTextField pipsField;
-  GGTextField statusField;
-  GGTextField resultField;
-  GGTextField scoreField;
+  private GGTextField pipsField;
+  private GGTextField statusField;
+  private GGTextField resultField;
+  private GGTextField scoreField;
 
   private final Location pipsLocation = new Location(70, 230);
   private final Location statusLocation = new Location(20, 330);
@@ -43,5 +43,25 @@ public class StatusBoard extends GameGrid {
     resultField.setFont(new Font("Arial", Font.PLAIN, 16));
     resultField.setTextColor(YELLOW);
     resultField.show();
-  } 
+  }
+
+  public void showPips(String text) {
+    pipsField.setText(text);
+    if (text != "") System.out.println(text);
+  }
+
+  public void showStatus(String text) {
+    statusField.setText(text);
+    System.out.println("Status: " + text);
+  }
+
+  public void showScore(String text) {
+    scoreField.setText(text);
+    System.out.println(text);
+  }
+
+  public void showResult(String text) {
+    resultField.setText(text);
+    System.out.println("Result: " + text);
+  }
 }

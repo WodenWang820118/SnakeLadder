@@ -1,7 +1,6 @@
 package snakeladder.game.pane.navigationpane;
 
 import ch.aplu.jgamegrid.*;
-import java.awt.*;
 import ch.aplu.util.*;
 import snakeladder.game.pane.Die;
 import snakeladder.game.pane.GamePlayCallback;
@@ -41,7 +40,6 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
   private PaneController pc;
   private GamePaneModel gpModel;
   private NavigationPaneModel npModel;
-  private StatusModel statusModel;
   private DieBoard dieBoard;
   private StatusBoard statusBoard;
 
@@ -82,11 +80,9 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
     this.pc = pc;
     this.gpModel = pc.gpController.getGpModel();
     this.npModel = pc.npController.getNpModel();
-    this.statusModel = pc.npController.getStatusModel();
     setupDieValues(gpModel);
   }
 
-  // TODO: should be in dieboard specifically
   public int getDieValue(GamePaneModel gpModel) {
     return npModel.getDieValue(gpModel);
   }
@@ -120,15 +116,15 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
   }
 
   public void showStatus(String text) {
-    statusModel.showStatus(statusBoard.statusField, text);
+    statusBoard.showStatus(text);
   }
 
   public void prepareRoll(int currentIndex) {
     // Game over
     if (currentIndex == 100) {
       playSound(GGSound.FADE);
-      statusModel.showStatus(statusBoard.statusField, "Click the hand!");
-      statusModel.showResult(statusBoard.resultField, "Game over");
+      statusBoard.showStatus("Click the hand!");
+      statusBoard.showResult("Game over");
       npModel.setGameOver(true);
       // isGameOver = true;
       handBtn.setEnabled(true);
@@ -141,9 +137,9 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
       gpModel.resetAllPuppets();
     } else {
       playSound(GGSound.CLICK);
-      statusModel.showStatus(statusBoard.statusField, "Click the hand!");
+      statusBoard.showStatus("Click the hand!");
       String result = gpModel.getPuppet().getPuppetName() + " - pos: " + currentIndex;
-      statusModel.showResult(statusBoard.resultField, result);
+      statusBoard.showResult(result);
       gpModel.switchToNextPuppet();
       // System.out.println("current puppet - auto: " + gp.getPuppet().getPuppetName() + "  " + gp.getPuppet().isAuto() );
 
@@ -158,11 +154,11 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
   }
 
   public void startMoving(int nb) {
-    statusModel.showStatus(statusBoard.statusField, "Moving...");
-    statusModel.showPips(statusBoard.pipsField, "Pips: " + nb);
+    statusBoard.showStatus("Moving...");
+    statusBoard.showPips("Pips: " + nb);
     int newScore = npModel.getNbRolls() + 1;
     npModel.setNbRolls(newScore);
-    statusModel.showScore(statusBoard.scoreField, "# Rolls: " + newScore);
+    statusBoard.showScore("# Rolls: " + newScore);
     gpModel.getPuppet().go(nb);
   }
 
@@ -186,8 +182,8 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
     if (rollNumber == RANDOM_ROLL_TAG) {
       nb = ServicesRandom.get().nextInt(6) + 1;
     }
-    statusModel.showStatus(statusBoard.statusField, "Rolling...");
-    statusModel.showPips(statusBoard.pipsField, "");
+    statusBoard.showStatus("Rolling...");
+    statusBoard.showPips("");
 
     removeActors(Die.class);
     Die die = new Die(nb, this);
