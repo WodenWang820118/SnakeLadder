@@ -34,6 +34,7 @@ public class GamePane extends GameGrid {
     setBgImagePath(imgPath);
   }
 
+  // setter injection
   public void setPaneController(PaneController pc) {
     this.pc = pc;
   }

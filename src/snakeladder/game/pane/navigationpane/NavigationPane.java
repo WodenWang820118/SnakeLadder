@@ -82,7 +82,8 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
   public void setGamePlayCallback(GamePlayCallback gamePlayCallback) {
     this.gamePlayCallback = gamePlayCallback;
   }
-
+  
+  // setter injection
   public void setPaneController(PaneController pc) {
     this.pc = pc;
     this.gpModel = pc.gpController.getGpModel();

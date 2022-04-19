@@ -30,9 +30,11 @@ public class FrameTutorial extends JFrame {
       ", (Design: Carlo Donzelli, Implementation: Aegidius Pluess)");
 
     // instantiate views
+    // low couping: the dieBoard and statusBoard are instantiated without dependencies
     DieBoard dieBoard = new DieBoard();
     StatusBoard statusBoard = new StatusBoard();
     GamePane gp = new GamePane(properties);
+    // dependency injection: constructor injection
     NavigationPane np = new NavigationPane(properties, dieBoard, statusBoard);
 
     // instantiate models
@@ -56,6 +58,8 @@ public class FrameTutorial extends JFrame {
 
     pack();  // Must be called before actors are added!
 
+    // setter injection
+    // the order of injection makes sure the thread does not point to Null
     pc.getNp().setPaneController(pc);
     pc.createNpGui();
     pc.getGp().setPaneController(pc);

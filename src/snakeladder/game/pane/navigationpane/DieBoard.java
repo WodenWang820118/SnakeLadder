@@ -31,8 +31,6 @@ public class DieBoard {
   private ManualDieButton manualDieButton;
 
   public void addDieButtons(NavigationPane np) {
-    // ManualDieButton manualDieButton = new ManualDieButton();
-
     np.addActor(die1Button, die1Location);
     np.addActor(die2Button, die2Location);
     np.addActor(die3Button, die3Location);
@@ -48,6 +46,7 @@ public class DieBoard {
     die6Button.addButtonListener(manualDieButton);
   }
 
+  // setter injection
   public void setManualDieButton(ManualDieButton manualDieButton) {
     this.manualDieButton = manualDieButton;
   }
