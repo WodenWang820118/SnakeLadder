@@ -10,9 +10,10 @@ import snakeladder.utility.PropertiesLoader;
 
 public class GamePaneModel {
 
-  private int numberOfPlayers = 1;
-  private int currentPuppetIndex = 0;
-  private List<Boolean> playerManualMode;
+  final int MAX_PUPPET_SPRITES = 4;
+  public int numberOfPlayers = 1;
+  public int currentPuppetIndex = 0;
+  public List<Boolean> playerManualMode;
   private ArrayList<Connection> connections = new ArrayList<Connection>();
   private List<Puppet> puppets =  new ArrayList<>();
 
@@ -53,7 +54,7 @@ public class GamePaneModel {
     return playerManualMode;
   }
 
-  private ArrayList<Connection> getConnections() {
+  ArrayList<Connection> getConnections() {
     return connections;
   }
 

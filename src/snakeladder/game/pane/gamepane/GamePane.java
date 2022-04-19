@@ -1,18 +1,32 @@
 package snakeladder.game.pane.gamepane;
 
-import java.util.Properties;
+/**
+ * @author Guan-Xin Wang
+ * The GamePane uses the GamePaneModel to store and manipulate the game data.
+ * The NavigationPane is used to instantiate the puppet
+ */
 
-import ch.aplu.jgamegrid.Location;
-import ch.aplu.jgamegrid.GameGrid;
+import ch.aplu.jgamegrid.*;
+import snakeladder.game.pane.PaneController;
+import snakeladder.game.pane.Puppet;
+
+import java.util.Properties;
 
 @SuppressWarnings("serial")
 public class GamePane extends GameGrid {
   
-  private final Location startLocation = new Location(-1, 9);  // outside grid
+  public final Location startLocation = new Location(-1, 9);  // outside grid
+  public final int animationStep = 10;
   public static final int NUMBER_HORIZONTAL_CELLS = 10;
   public static final int NUMBER_VERTICAL_CELLS = 10;
+  final int MAX_PUPPET_SPRITES = 4;
 
-  public GamePane(Properties properties) {}
+  // components
+  private PaneController pc;
+
+  public GamePane(Properties properties) {
+    initGamePane(properties);
+  }
 
   public void initGamePane(Properties properties) {
     setSimulationPeriod(100);
@@ -27,7 +41,35 @@ public class GamePane extends GameGrid {
     setBgImagePath(imgPath);
   }
 
-  public static Location cellToLocation(int cellIndex) {
+  public void setPaneController(PaneController pc) {
+    this.pc = pc;
+  }
+
+  // TODO: refactor after; decouple the puppet class from gp and np
+  // the pc isn't null since the method is called after the pc is set
+  public void createGui() {
+    for (int i = 0; i < pc.gpController.getGpModel().numberOfPlayers; i++) {
+      boolean isAuto = pc.gpController.getGpModel().playerManualMode.get(i);
+      int spriteImageIndex = i % MAX_PUPPET_SPRITES;
+      String puppetImage = "sprites/cat_" + spriteImageIndex + ".gif";
+
+      // TODO: the puppet here is hard to decouple
+      Puppet puppet = new Puppet(pc, puppetImage);
+      puppet.setAuto(isAuto);
+      puppet.setPuppetName("Player " + (i + 1));
+      addActor(puppet, startLocation);
+      pc.gpController.getGpModel().getPuppets().add(puppet);
+    }
+  }
+
+  public Connection getConnectionAt(Location loc) {
+    for (Connection con : pc.gpController.getGpModel().getConnections())
+      if (con.getLocStart().equals(loc))
+        return con;
+    return null;
+  }
+
+  static Location cellToLocation(int cellIndex) {
     int index = cellIndex - 1;  // 0..99
 
     int tens = index / NUMBER_HORIZONTAL_CELLS;
@@ -43,7 +85,7 @@ public class GamePane extends GameGrid {
 
     return new Location(x, y);
   }
-
+  
   public int x(int y, Connection con) {
     int x0 = toPoint(con.getLocStart()).x;
     int y0 = toPoint(con.getLocStart()).y;
@@ -55,7 +97,4 @@ public class GamePane extends GameGrid {
     return (int)(a * y + b);
   }
 
-  public Location getStartLoction() {
-    return startLocation;
-  }
 }

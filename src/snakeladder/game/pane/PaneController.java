@@ -1,167 +1,64 @@
 package snakeladder.game.pane;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Properties;
 
-import ch.aplu.jgamegrid.GGSound;
 import ch.aplu.jgamegrid.GameGrid;
 import ch.aplu.util.Monitor;
 import snakeladder.game.pane.gamepane.GamePane;
 import snakeladder.game.pane.gamepane.GamePaneController;
 import snakeladder.game.pane.gamepane.GamePaneModel;
-import snakeladder.game.pane.navigationpane.GamePlayCallback;
-import snakeladder.game.pane.navigationpane.ManualDieButton;
 import snakeladder.game.pane.navigationpane.NavigationPane;
 import snakeladder.game.pane.navigationpane.NavigationPaneController;
 import snakeladder.game.pane.navigationpane.NavigationPaneModel;
-import snakeladder.game.pane.navigationpane.die.Die;
-import snakeladder.game.pane.navigationpane.die.DieModel;
-import snakeladder.game.pane.navigationpane.status.StatusModel;
-import snakeladder.utility.ServicesRandom;
 
-public class PaneController extends GameGrid implements GamePlayCallback {
+public class PaneController extends GameGrid {
   
-  // fields
-  private final int RANDOM_ROLL_TAG = -1;
-  private final int MAX_PUPPET_SPRITES = 4;
-  final int animationStep = 10;
-  private volatile boolean isGameOver = false;
-  private int nbRolls = 0;
-  private boolean isAuto;
+  public GamePaneController gpController;
+  public NavigationPaneController npController;
 
-  // components
-  private GamePaneController gpController;
-  private NavigationPaneController npController;
-  
-  // models from two controllers
-  private GamePaneModel gpModel = gpController.getGpModel();
-  private NavigationPaneModel npModel = npController.getNavigationPaneModel();
-  private GamePane gp = gpController.getGamePane();
-  private NavigationPane np = npController.getNavigationPane();
-  private StatusModel statusModel = npController.getStatusModel();
-  private DieModel dieModel = npController.getDieModel();
-  private ManualDieButton manualDieButton = npController.getManualDieButton();
-  private GamePlayCallback gamePlayCallback; // TODO: need to implement this interface
-
-  public PaneController(GamePaneController gpController, NavigationPaneController npController) {
+  public PaneController(GamePaneController gpController, NavigationPaneController npController, Properties properties) {
     this.gpController = gpController;
     this.npController = npController;
+    new SimulatedPlayer().start();
+
+    gpController.getGpModel().createSnakesLadders(properties);
+    gpController.getGpModel().setupPlayers(properties);
+    gpController.getGp().setGamePaneSnakeLadderImg("sprites/gamepane_snakeladder.png");
   }
 
-  public void createGamePaneGui() {
-    for (int i = 0; i < gpModel.getNumberOfPlayers(); i++) {
-      boolean isAuto = gpModel.getPlayerManualMode().get(i);
-      int spriteImageIndex = i % MAX_PUPPET_SPRITES;
-      String puppetImage = "sprites/cat_" + spriteImageIndex + ".gif";
-      Puppet puppet = new Puppet(puppetImage);
-      puppet.setPaneController(this); // set the paneController to use the act method
-      puppet.setAuto(isAuto);
-      puppet.setPuppetName("Player " + (i + 1));
-      addActor(puppet, gp.getStartLoction());
-      gpModel.getPuppets().add(puppet);
-    }
+  public void createGpGui() {
+    gpController.getGp().createGui();
   }
 
-  public void startMoving(int nb) {
-    statusModel.showStatus(np.getStatusField(), "Moving...");
-    statusModel.showPips(np.getStatusField(), "Pips: " + nb);
-    statusModel.showScore(np.getScoreField(), "# Rolls: " + (++nbRolls));
-    gpModel.getPuppet().go(nb);
+  public void createNpGui() {
+    npController.getNp().createGui();
   }
 
-  public void prepareBeforeRoll() {
-    np.getHandBtn().setEnabled(false);
-    if (isGameOver) {
-      isGameOver = false;
-      nbRolls = 0;
-    }
+  public GamePaneModel getGpModel() {
+    return gpController.getGpModel();
   }
 
-  public void roll(int rollNumber) {
-    int nb = rollNumber;
-    if (rollNumber == RANDOM_ROLL_TAG) {
-      nb = ServicesRandom.get().nextInt(6) + 1;
-    }
-    statusModel.showStatus(np.getStatusField(), "Rolling...");
-    statusModel.showPips(np.getPipField(),"");
-
-    removeActors(Die.class);
-    Die die = new Die(nb, this);
-    addActor(die, np.getDieBoardLocation());
+  public NavigationPaneModel getNpModel() {
+    return npController.getNpModel();
   }
 
-  public void prepareRoll(int currentIndex) {
-    if (currentIndex == 100) {
-      playSound(GGSound.FADE);
-      statusModel.showStatus(np.getStatusField(), "Click the hand!");
-      statusModel.showResult(np.getResultField(), "Game over");
-      isGameOver = true;
-      np.getHandBtn().setEnabled(true);
+  public GamePane getGp() {
+    return gpController.getGp();
+  }
 
-      List<String> playerPositions = new ArrayList<>();
+  public NavigationPane getNp() {
+    return npController.getNp();
+  }
 
-      for (Puppet puppet: gpModel.getPuppets()) {
-        playerPositions.add(puppet.getCellIndex() + "");
-      }
-      gamePlayCallback.finishGameWithResults(nbRolls % gpModel.getNumberOfPlayers(), playerPositions);
-      gpModel.resetAllPuppets();
-    } else {
-      playSound(GGSound.CLICK);
-      statusModel.showStatus(np.getStatusField(), "Done. Click the hand!");
-      String result = gpModel.getPuppet().getPuppetName() + " - pos: " + currentIndex;
-      statusModel.showResult(np.getResultField(), result);
-      gpModel.switchToNextPuppet();
-      // System.out.println("current puppet - auto: " + gp.getPuppet().getPuppetName() + "  " + gp.getPuppet().isAuto() );
-
-      if (isAuto) {
-        Monitor.wakeUp();
-      } else if (gpModel.getPuppet().isAuto()) {
-        Monitor.wakeUp();
-      } else {
-        np.getHandBtn().setEnabled(true);
+  private class SimulatedPlayer extends Thread {
+    public void run() {
+      while (true) {
+        Monitor.putSleep();
+        getNp().getHandBtn().show(1);
+        getNp().roll(getNp().getDieValue(getGpModel()));
+        delay(1000);
+        getNp().getHandBtn().show(0);
       }
     }
-  }
-
-  public GamePaneController getGpController() {
-    return gpController;
-  }
-
-  public NavigationPaneController getNpController() {
-    return npController;
-  }
-
-  public GamePane getGamePane() {
-    return gp;
-  }
-
-  public NavigationPane getNavigationPane() {
-    return np;
-  }
-
-  public GamePaneModel getGamePaneModel() {
-    return gpModel;
-  }
-
-  public NavigationPaneModel getNavigationPaneModel() {
-    return npModel;
-  }
-
-  public StatusModel getStatusModel() {
-    return statusModel;
-  }
-
-  public DieModel getDieModel() {
-    return dieModel;
-  }
-
-  public ManualDieButton getManualDieButton() {
-    return manualDieButton;
-  }
-
-  @Override
-  public void finishGameWithResults(int winningPlayerIndex, List<String> playerCurrentPositions) {
-    // TODO Auto-generated method stub
-    
   }
 }
