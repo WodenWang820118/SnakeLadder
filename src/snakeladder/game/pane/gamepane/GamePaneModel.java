@@ -5,19 +5,33 @@ import java.util.List;
 import java.util.Properties;
 
 import ch.aplu.jgamegrid.Location;
+import snakeladder.game.pane.PaneController;
 import snakeladder.game.pane.Puppet;
 import snakeladder.utility.PropertiesLoader;
 
 public class GamePaneModel {
 
   final int MAX_PUPPET_SPRITES = 4;
-  public int numberOfPlayers = 1;
-  public int currentPuppetIndex = 0;
-  public List<Boolean> playerManualMode;
+  private int numberOfPlayers = 1;
+  private int currentPuppetIndex = 0;
+  private List<Boolean> playerManualMode;
   private ArrayList<Connection> connections = new ArrayList<Connection>();
   private List<Puppet> puppets =  new ArrayList<>();
 
   public GamePaneModel(Properties properties){}
+
+  public void createGui(PaneController pc) {
+    for (int i = 0; i < getNumberOfPlayers(); i++) {
+      boolean isAuto = getPlayerManualMode().get(i);
+      int spriteImageIndex = i % MAX_PUPPET_SPRITES;
+      String puppetImage = "sprites/cat_" + spriteImageIndex + ".gif";
+      Puppet puppet = new Puppet(pc, puppetImage);
+      puppet.setAuto(isAuto);
+      puppet.setPuppetName("Player " + (i + 1));
+      pc.getGp().addActor(puppet, pc.getGp().startLocation);
+      getPuppets().add(puppet);
+    }
+  }
 
   public void createSnakesLadders(Properties properties) {
     connections.addAll(PropertiesLoader.loadSnakes(properties));
@@ -54,7 +68,7 @@ public class GamePaneModel {
     return playerManualMode;
   }
 
-  ArrayList<Connection> getConnections() {
+  public ArrayList<Connection> getConnections() {
     return connections;
   }
 

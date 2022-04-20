@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import snakeladder.game.pane.gamepane.GamePaneModel;
 
-public class NavigationPaneModel extends NavigationPane {
+public class NavigationPaneModel {
 
   private final int RANDOM_ROLL_TAG = -1;
   private int nbRolls = 0;
@@ -15,7 +15,6 @@ public class NavigationPaneModel extends NavigationPane {
   private Properties properties;
 
   public NavigationPaneModel(Properties properties) {
-    super(properties);
     this.properties = properties;
   }
 
@@ -51,8 +50,6 @@ public class NavigationPaneModel extends NavigationPane {
     }
     return RANDOM_ROLL_TAG;
   }
-
-
 
   public List<List<Integer>> getDieValues() {
     return dieValues;

@@ -5,10 +5,11 @@ import snakeladder.game.pane.PaneController;
 import snakeladder.game.pane.gamepane.GamePane;
 import snakeladder.game.pane.gamepane.GamePaneController;
 import snakeladder.game.pane.gamepane.GamePaneModel;
+import snakeladder.game.pane.navigationpane.DieBoard;
 import snakeladder.game.pane.navigationpane.NavigationPane;
 import snakeladder.game.pane.navigationpane.NavigationPaneController;
 import snakeladder.game.pane.navigationpane.NavigationPaneModel;
-import snakeladder.game.pane.navigationpane.StatusModel;
+import snakeladder.game.pane.navigationpane.StatusBoard;
 import snakeladder.utility.PropertiesLoader;
 import snakeladder.utility.ServicesRandom;
 
@@ -27,19 +28,22 @@ public class FrameTutorial extends JFrame {
     setLocation(10, 10);
     setTitle("snakeladder.game.FrameTutorial V" + version +
       ", (Design: Carlo Donzelli, Implementation: Aegidius Pluess)");
-    
+
+    // instantiate views
+    // low couping: the dieBoard and statusBoard are instantiated without dependencies
+    DieBoard dieBoard = new DieBoard();
+    StatusBoard statusBoard = new StatusBoard();
+    GamePane gp = new GamePane(properties);
+    // dependency injection: constructor injection
+    NavigationPane np = new NavigationPane(properties, dieBoard, statusBoard);
+
     // instantiate models
     GamePaneModel gpModel = new GamePaneModel(properties);
     NavigationPaneModel npModel = new NavigationPaneModel(properties);
-    StatusModel statusModel = new StatusModel();
-
-    // instantiate views
-    GamePane gp = new GamePane(properties);
-    NavigationPane np = new NavigationPane(properties);
 
     // instantiate controllers
     GamePaneController gpController = new GamePaneController(gp, gpModel, properties);
-    NavigationPaneController npController = new NavigationPaneController(np, npModel, statusModel, properties);
+    NavigationPaneController npController = new NavigationPaneController(np, dieBoard, statusBoard, npModel, properties);
     PaneController pc = new PaneController(gpController, npController, properties);
 
     getContentPane().add(pc.getGp(), BorderLayout.WEST);
@@ -54,10 +58,12 @@ public class FrameTutorial extends JFrame {
 
     pack();  // Must be called before actors are added!
 
+    // setter injection
+    // the order of injection makes sure the thread does not point to Null
     pc.getNp().setPaneController(pc);
     pc.createNpGui();
     pc.getGp().setPaneController(pc);
-    pc.createGpGui();
+    pc.createGpGui(pc);
     pc.getNp().checkAuto();
 
   }

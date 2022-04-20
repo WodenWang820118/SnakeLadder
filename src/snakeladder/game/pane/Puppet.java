@@ -1,6 +1,8 @@
 package snakeladder.game.pane;
 
-import ch.aplu.jgamegrid.*;
+import ch.aplu.jgamegrid.Actor;
+import ch.aplu.jgamegrid.GGSound;
+import ch.aplu.jgamegrid.Location;
 import snakeladder.game.pane.gamepane.Connection;
 import snakeladder.game.pane.gamepane.GamePane;
 import snakeladder.game.pane.gamepane.Snake;
@@ -134,11 +136,11 @@ public class Puppet extends Actor {
           else
             dy = -gp.animationStep;
           if (currentCon instanceof Snake) {
-            np.showStatus("Digesting...");
+            pc.npController.getStatusBoard().showStatus("Digesting...");
             np.playSound(GGSound.MMM);
           }
           else {
-            np.showStatus("Climbing...");
+            pc.npController.getStatusBoard().showStatus("Climbing...");
             np.playSound(GGSound.BOING);
           }
         } else {

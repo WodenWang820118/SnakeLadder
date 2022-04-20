@@ -26,8 +26,8 @@ public class PaneController extends GameGrid {
     gpController.getGp().setGamePaneSnakeLadderImg("sprites/gamepane_snakeladder.png");
   }
 
-  public void createGpGui() {
-    gpController.getGp().createGui();
+  public void createGpGui(PaneController pc) {
+    gpController.getGp().createGui(this);
   }
 
   public void createNpGui() {

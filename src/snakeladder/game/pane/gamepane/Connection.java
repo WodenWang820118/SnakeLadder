@@ -7,6 +7,7 @@ public abstract class Connection {
   private Location locEnd;
   private int cellStart;
   private int cellEnd;
+  private String imagePath;
 
   Connection(int cellStart, int cellEnd) {
     this.cellStart = cellStart;
@@ -14,8 +15,6 @@ public abstract class Connection {
     locStart = GamePane.cellToLocation(cellStart);
     locEnd = GamePane.cellToLocation(cellEnd);
   }
-
-  String imagePath;
 
   public Location getLocStart() {
     return locStart;

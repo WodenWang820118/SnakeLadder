@@ -1,14 +1,8 @@
 package snakeladder.game.pane.gamepane;
 
-/**
- * @author Guan-Xin Wang
- * The GamePane uses the GamePaneModel to store and manipulate the game data.
- * The NavigationPane is used to instantiate the puppet
- */
-
-import ch.aplu.jgamegrid.*;
+import ch.aplu.jgamegrid.GameGrid;
+import ch.aplu.jgamegrid.Location;
 import snakeladder.game.pane.PaneController;
-import snakeladder.game.pane.Puppet;
 
 import java.util.Properties;
 
@@ -19,7 +13,6 @@ public class GamePane extends GameGrid {
   public final int animationStep = 10;
   public static final int NUMBER_HORIZONTAL_CELLS = 10;
   public static final int NUMBER_VERTICAL_CELLS = 10;
-  final int MAX_PUPPET_SPRITES = 4;
 
   // components
   private PaneController pc;
@@ -41,29 +34,17 @@ public class GamePane extends GameGrid {
     setBgImagePath(imgPath);
   }
 
+  // setter injection
   public void setPaneController(PaneController pc) {
     this.pc = pc;
   }
 
-  // TODO: refactor after; decouple the puppet class from gp and np
-  // the pc isn't null since the method is called after the pc is set
-  public void createGui() {
-    for (int i = 0; i < pc.gpController.getGpModel().numberOfPlayers; i++) {
-      boolean isAuto = pc.gpController.getGpModel().playerManualMode.get(i);
-      int spriteImageIndex = i % MAX_PUPPET_SPRITES;
-      String puppetImage = "sprites/cat_" + spriteImageIndex + ".gif";
-
-      // TODO: the puppet here is hard to decouple
-      Puppet puppet = new Puppet(pc, puppetImage);
-      puppet.setAuto(isAuto);
-      puppet.setPuppetName("Player " + (i + 1));
-      addActor(puppet, startLocation);
-      pc.gpController.getGpModel().getPuppets().add(puppet);
-    }
+  public void createGui(PaneController pc) {
+    pc.getGpModel().createGui(pc);
   }
 
   public Connection getConnectionAt(Location loc) {
-    for (Connection con : pc.gpController.getGpModel().getConnections())
+    for (Connection con : pc.getGpModel().getConnections())
       if (con.getLocStart().equals(loc))
         return con;
     return null;
@@ -96,5 +77,4 @@ public class GamePane extends GameGrid {
     double b = (double)(y1 * x0 - y0 * x1) / (y1 - y0);
     return (int)(a * y + b);
   }
-
 }
