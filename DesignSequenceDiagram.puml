@@ -1,5 +1,39 @@
 @startuml
-loop each player
+GamePane -> GamePaneModel: createGui(PaneController)
+loop players
+    GamePaneModel -> Puppet: new Puppet(PaneController)
+end
+GamePaneModel -> GamePaneModel: Puppets
 
+
+loop each player
+    NavigationPane -> NavigationPane: buttonClicked
+    NavigationPane -> NavigationPane: prepareRoll(currentIndex)
+    NavigationPane -> NavigationPane: roll(int rollNumber)
+    NavigationPane -> Die: new Die(nb, NavigationPane)
+    Die -> Die: act()
+    Die -> NavigationPane: startMoving(nb)
+
+    NavigationPane -> GamePaneModel: getPuppet()
+    /'the operation will change according to the new rule '/
+    GamePaneModel -> Puppet: go(nb)
+    alt cellIndex == 100
+        Puppet -> GamePane: setLocation(startLocation)
+    else cellIndex < 100
+        Puppet -> Puppet: nbSteps = nb
+        Puppet -> Puppet: act()
+        alt nbSteps > 0
+            Puppet -> Puppet: moveToNexCell(); nbSteps--; cellIndex++
+        else nbSteps == 0
+            Puppet -> GamePane: checkOnConnection()
+            alt currentCon != null
+                Puppet -> GamePane: toPoint(point)
+            else currentCon == null
+                Puppet -> NavigationPane: prepareRoll(cellIndex)
+            end
+        end
+    end
+    NavigationPane -> GamePaneModel: switchToNextPuppet()
+end
 
 @enduml
