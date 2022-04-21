@@ -1,4 +1,5 @@
 @startuml
+<<<<<<< HEAD
 GamePane -> GamePaneModel: createGui(PaneController)
 loop players
     GamePaneModel -> Puppet: new Puppet(PaneController)
@@ -35,5 +36,9 @@ loop each player
     end
     NavigationPane -> GamePaneModel: switchToNextPuppet()
 end
+=======
+loop each player
+
+>>>>>>> d6b3c8bd5db6cab06a41d55c350d1af6c91996e1
 
 @enduml
