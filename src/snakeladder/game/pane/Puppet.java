@@ -78,7 +78,7 @@ public class Puppet extends Actor {
   public int getCellIndex() {
     return cellIndex;
   }
-
+/*
   private void moveToNextCell() {
     int tens = cellIndex / 10;
     int ones = cellIndex - tens * 10;
@@ -117,6 +117,7 @@ public class Puppet extends Actor {
     }
     cellIndex--;
   }
+  */
 
   public void act() {
     if ((cellIndex / 10) % 2 == 0) {
@@ -216,7 +217,26 @@ public class Puppet extends Actor {
     }else if(nbSteps < 0){
       cellIndex --;
     }
-    setLocation(GamePane.cellToLocation(cellIndex));
+    Location loc = cellToLocation(cellIndex);
+    setLocation(loc);
+  }
+
+  // from GamePame， a better way to get location.
+  public static Location cellToLocation(int cellIndex) {
+    int index = cellIndex - 1;
+
+    int tens = index / 10;
+    int ones = index - tens * 10;
+
+    int y = 9 - tens;
+    int x;
+
+    if (tens % 2 == 0)     // Cells starting left 01, 21, .. 81
+      x = ones;
+    else     // Cells starting left 20, 40, .. 100
+      x = 9 - ones;
+
+    return new Location(x, y);
   }
 
 }

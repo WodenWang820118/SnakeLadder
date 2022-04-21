@@ -50,7 +50,7 @@ public class GamePane extends GameGrid {
     return null;
   }
 
-  public static Location cellToLocation(int cellIndex) {
+  static Location cellToLocation(int cellIndex) {
     int index = cellIndex - 1;  // 0..99
 
     int tens = index / NUMBER_HORIZONTAL_CELLS;
