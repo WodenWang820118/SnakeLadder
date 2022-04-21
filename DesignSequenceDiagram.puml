@@ -1,0 +1,5 @@
+@startuml
+loop each player
+
+
+@enduml
