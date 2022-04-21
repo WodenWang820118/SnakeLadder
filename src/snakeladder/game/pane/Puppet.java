@@ -78,47 +78,7 @@ public class Puppet extends Actor {
   public int getCellIndex() {
     return cellIndex;
   }
-/*
-  private void moveToNextCell() {
-    int tens = cellIndex / 10;
-    int ones = cellIndex - tens * 10;
-    // Cells starting left 01, 21, .. 81
-    if (tens % 2 == 0) {
-      if (ones == 0 && cellIndex > 0)
-        setLocation(new Location(getX(), getY() - 1));
-      else
-        setLocation(new Location(getX() + 1, getY()));
-    } else {
-      // Cells starting left 20, 40, .. 100
-      if (ones == 0)
-        setLocation(new Location(getX(), getY() - 1));
-      else
-        setLocation(new Location(getX() - 1, getY()));
-    }
-    cellIndex++;
-  }
-
-  // The logic is the same as moveToNextCell()
-  private void moveToPreviousCell() {
-    int tens = cellIndex / 10;
-    int ones = cellIndex - tens * 10;
-    // Cells starting left 01, 21, .. 81
-    if(tens % 2 == 0) {
-      if (ones == 0 && cellIndex > 0)
-        setLocation(new Location(getX(), getY() + 1));
-      else
-        setLocation(new Location(getX() - 1, getY()));
-    }else {
-      // Cells starting left 20, 40, .. 100
-      if (ones == 0)
-        setLocation(new Location(getX(), getY() + 1));
-      else
-        setLocation(new Location(getX() + 1, getY()));
-    }
-    cellIndex--;
-  }
-  */
-
+  
   public void act() {
     if ((cellIndex / 10) % 2 == 0) {
       if (isHorzMirror())
@@ -127,7 +87,7 @@ public class Puppet extends Actor {
       if (!isHorzMirror())
         setHorzMirror(true);
     }
-
+    
     // Animation: Move on connection
     // end-start < 0 means met the head of the snake
     // if met the head of the snake but notDown == true, not go down
@@ -155,14 +115,6 @@ public class Puppet extends Actor {
     // Normal movement
     if (nbSteps != 0) {
       moveToCell(nbSteps);
-      /*
-      if(nbSteps > 0){
-        moveToNextCell();
-      }
-      if(nbSteps < 0 && ifGoBack){
-        moveToPreviousCell();
-      }
-      */
 
       // Game over
       if (cellIndex == 100) {
@@ -211,6 +163,10 @@ public class Puppet extends Actor {
     this.ifGoBack = ifGoBack;
   }
 
+  public boolean getGoBack(){
+    return ifGoBack;
+  }
+
   public void moveToCell(int nbSteps){
     if(nbSteps > 0){
       cellIndex ++;
@@ -231,12 +187,11 @@ public class Puppet extends Actor {
     int y = 9 - tens;
     int x;
 
-    if (tens % 2 == 0)     // Cells starting left 01, 21, .. 81
+    if (tens % 2 == 0)    // Cells starting left 01, 21, .. 81
       x = ones;
     else     // Cells starting left 20, 40, .. 100
       x = 9 - ones;
 
     return new Location(x, y);
   }
-
 }

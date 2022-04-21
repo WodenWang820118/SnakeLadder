@@ -9,8 +9,7 @@ public class Cup {
     private NavigationPane np;
     private int numRolled;
 
-    public Cup(NavigationPane np){
-        this.np = np;
+    public Cup( ){
         this.dice = new ArrayList<>();
         this.numRolled = 0;
     }
@@ -35,5 +34,9 @@ public class Cup {
     // for addActor()
     public List<Die> getDice(){
         return this.dice;
+    }
+
+    public void setNavigationPane(NavigationPane np){
+      this.np = np;
     }
 }

@@ -28,7 +28,6 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
   private final int RANDOM_ROLL_TAG = -1;
   private final Location dieBoardLocation = new Location(100, 180);
   private int numberOfDice;
-  private Cup cup = new Cup(this);
 
   // animation and toggle location
   private final Location handBtnLocation = new Location(110, 70);
@@ -144,7 +143,7 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
       String result = gpModel.getPuppet().getPuppetName() + " - pos: " + currentIndex;
       statusBoard.showResult(result);
 
-      
+
       // task3 Check if Puppet are on the same grid
       int index = gpModel.getCurrentPuppetIndex();
       int n = 0;
@@ -210,8 +209,8 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
     statusBoard.showPips("");
 
     removeActors(Die.class);
-    cup.roll(nb);
-    addActor(cup.getDice().get(cup.getDice().size()-1), dieBoardLocation);
+    pc.getCup().roll(nb);
+    addActor(pc.getCup().getDice().get(pc.getCup().getDice().size()-1), dieBoardLocation);
   }
 
   public void buttonPressed(GGButton btn) {

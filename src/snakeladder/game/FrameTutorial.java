@@ -1,5 +1,6 @@
 package snakeladder.game;
 
+import snakeladder.game.pane.Cup;
 import snakeladder.game.pane.GamePlayCallback;
 import snakeladder.game.pane.PaneController;
 import snakeladder.game.pane.gamepane.GamePane;
@@ -40,11 +41,12 @@ public class FrameTutorial extends JFrame {
     // instantiate models
     GamePaneModel gpModel = new GamePaneModel(properties);
     NavigationPaneModel npModel = new NavigationPaneModel(properties);
+    Cup cup = new Cup();
 
     // instantiate controllers
     GamePaneController gpController = new GamePaneController(gp, gpModel, properties);
     NavigationPaneController npController = new NavigationPaneController(np, dieBoard, statusBoard, npModel, properties);
-    PaneController pc = new PaneController(gpController, npController, properties);
+    PaneController pc = new PaneController(gpController, npController, cup, properties);
 
     getContentPane().add(pc.getGp(), BorderLayout.WEST);
     getContentPane().add(pc.getNp(), BorderLayout.EAST);

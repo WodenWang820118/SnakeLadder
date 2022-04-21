@@ -15,10 +15,14 @@ public class PaneController extends GameGrid {
   
   public GamePaneController gpController;
   public NavigationPaneController npController;
+  private Cup cup;
+  
 
-  public PaneController(GamePaneController gpController, NavigationPaneController npController, Properties properties) {
+  public PaneController(GamePaneController gpController, NavigationPaneController npController, Cup cup, Properties properties) {
     this.gpController = gpController;
     this.npController = npController;
+    this.cup = cup;
+    cup.setNavigationPane(npController.getNp());
     new SimulatedPlayer().start();
 
     gpController.getGpModel().createSnakesLadders(properties);
@@ -48,6 +52,10 @@ public class PaneController extends GameGrid {
 
   public NavigationPane getNp() {
     return npController.getNp();
+  }
+
+  public Cup getCup(){
+    return cup;
   }
 
   private class SimulatedPlayer extends Thread {
