@@ -143,6 +143,20 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
       statusBoard.showStatus("Click the hand!");
       String result = gpModel.getPuppet().getPuppetName() + " - pos: " + currentIndex;
       statusBoard.showResult(result);
+
+      
+      // task3 Check if Puppet are on the same grid
+      int index = gpModel.getCurrentPuppetIndex();
+      int n = 0;
+      for(Puppet puppet : gpModel.getPuppets()){
+        if(n != index && puppet.getCellIndex() == currentIndex){
+          puppet.setGoBack(true);
+          puppet.go(-1);
+        }
+        n ++;
+      }
+
+
       gpModel.switchToNextPuppet();
       // System.out.println("current puppet - auto: " + gp.getPuppet().getPuppetName() + "  " + gp.getPuppet().isAuto() );
 

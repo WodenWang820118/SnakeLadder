@@ -23,6 +23,11 @@ public class Puppet extends Actor {
   private boolean isAuto;
   private String puppetName;
 
+  // task2
+  private boolean notDown = false;
+  // task3
+  private boolean ifGoBack = false;
+
   public Puppet(PaneController pc,  String puppetImage) {
     super(puppetImage);
     this.pc = pc;
@@ -53,6 +58,14 @@ public class Puppet extends Actor {
       setLocation(gp.startLocation);
     }
     this.nbSteps = nbSteps;
+
+    // Check if a die roll a “1”
+    if(nbSteps == np.getNumberOfDice()){
+      notDown = true;
+    }else{
+      notDown = false;
+    }
+
     setActEnabled(true);
   }
 
@@ -85,6 +98,26 @@ public class Puppet extends Actor {
     cellIndex++;
   }
 
+  // The logic is the same as moveToNextCell()
+  private void moveToPreviousCell() {
+    int tens = cellIndex / 10;
+    int ones = cellIndex - tens * 10;
+    // Cells starting left 01, 21, .. 81
+    if(tens % 2 == 0) {
+      if (ones == 0 && cellIndex > 0)
+        setLocation(new Location(getX(), getY() + 1));
+      else
+        setLocation(new Location(getX() - 1, getY()));
+    }else {
+      // Cells starting left 20, 40, .. 100
+      if (ones == 0)
+        setLocation(new Location(getX(), getY() + 1));
+      else
+        setLocation(new Location(getX() + 1, getY()));
+    }
+    cellIndex--;
+  }
+
   public void act() {
     if ((cellIndex / 10) % 2 == 0) {
       if (isHorzMirror())
@@ -95,7 +128,11 @@ public class Puppet extends Actor {
     }
 
     // Animation: Move on connection
-    if (currentCon != null) {
+    // end-start < 0 means met the head of the snake
+    // if met the head of the snake but notDown == true, not go down
+    // if met the head of the snake and notDown == false, can go down
+    if (currentCon != null && 
+        !(notDown && (currentCon.getCellEnd() - currentCon.getCellStart()) < 0)) {
       int x = gp.x(y, currentCon);
       setPixelLocation(new Point(x, y));
       y += dy;
@@ -115,8 +152,16 @@ public class Puppet extends Actor {
     }
 
     // Normal movement
-    if (nbSteps > 0) {
-      moveToNextCell();
+    if (nbSteps != 0) {
+      moveToCell(nbSteps);
+      /*
+      if(nbSteps > 0){
+        moveToNextCell();
+      }
+      if(nbSteps < 0 && ifGoBack){
+        moveToPreviousCell();
+      }
+      */
 
       // Game over
       if (cellIndex == 100) {
@@ -125,10 +170,19 @@ public class Puppet extends Actor {
         return;
       }
 
-      nbSteps--;
+      if(nbSteps > 0){
+        nbSteps--;
+      }
+      if(nbSteps < 0){
+        nbSteps++;
+      }
+
       if (nbSteps == 0) {
         // Check if on connection start
-        if ((currentCon = gp.getConnectionAt(getLocation())) != null) {
+        // check notDown and if met a head of the snake
+        if ((currentCon = gp.getConnectionAt(getLocation())) != null && 
+            !(notDown && (currentCon.getCellEnd() - currentCon.getCellStart()) < 0)) {
+
           gp.setSimulationPeriod(50);
           y = gp.toPoint(currentCon.getLocStart()).y;
           if (currentCon.getLocEnd().y > currentCon.getLocStart().y)
@@ -150,4 +204,19 @@ public class Puppet extends Actor {
       }
     }
   }
+
+  // task3 
+  public void setGoBack(boolean ifGoBack){
+    this.ifGoBack = ifGoBack;
+  }
+
+  public void moveToCell(int nbSteps){
+    if(nbSteps > 0){
+      cellIndex ++;
+    }else if(nbSteps < 0){
+      cellIndex --;
+    }
+    setLocation(GamePane.cellToLocation(cellIndex));
+  }
+
 }
