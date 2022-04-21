@@ -9,10 +9,7 @@ import ch.aplu.jgamegrid.GGSound;
 import ch.aplu.jgamegrid.GameGrid;
 import ch.aplu.jgamegrid.Location;
 import ch.aplu.util.*;
-import snakeladder.game.pane.Die;
-import snakeladder.game.pane.GamePlayCallback;
-import snakeladder.game.pane.PaneController;
-import snakeladder.game.pane.Puppet;
+import snakeladder.game.pane.*;
 import snakeladder.game.pane.gamepane.GamePaneModel;
 import snakeladder.utility.ServicesRandom;
 
@@ -21,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 @SuppressWarnings("serial")
-public class NavigationPane extends GameGrid implements GGButtonListener {
+public class NavigationPane extends GameGrid implements GGButtonListener{
 
   // fields
   private boolean isAuto;
@@ -30,6 +27,8 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
   // dice related
   private final int RANDOM_ROLL_TAG = -1;
   private final Location dieBoardLocation = new Location(100, 180);
+  private int numberOfDice;
+  private Cup cup = new Cup(this);
 
   // animation and toggle location
   private final Location handBtnLocation = new Location(110, 70);
@@ -55,7 +54,7 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
     this.dieBoard = dieBoard;
     this.statusBoard = statusBoard;
 
-    int numberOfDice =  //Number of six-sided dice
+    this.numberOfDice =  //Number of six-sided dice
             (properties.getProperty("dice.count") == null)
                     ? 1  // default
                     : Integer.parseInt(properties.getProperty("dice.count"));
@@ -166,8 +165,15 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
     gpModel.getPuppet().go(nb);
   }
 
+  int index = 0;
   public void prepareBeforeRoll() {
-    handBtn.setEnabled(false);
+    // 让手可以动
+    if (index == numberOfDice){
+      handBtn.setEnabled(false);
+      index = 0;
+    }else{
+      index ++;
+    }
     // First click after game over
     if (npModel.isGameOver()) {
       npModel.setGameOver(false);
@@ -190,16 +196,14 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
     statusBoard.showPips("");
 
     removeActors(Die.class);
-    Die die = new Die(nb, this);
-    addActor(die, dieBoardLocation);
+    cup.roll(nb);
+    addActor(cup.getDice().get(cup.getDice().size()-1), dieBoardLocation);
   }
 
-  public void buttonPressed(GGButton btn)
-  {
+  public void buttonPressed(GGButton btn) {
   }
 
-  public void buttonReleased(GGButton btn)
-  {
+  public void buttonReleased(GGButton btn) {
   }
 
   public void checkAuto() {
@@ -208,5 +212,10 @@ public class NavigationPane extends GameGrid implements GGButtonListener {
 
   public GGButton getHandBtn() {
     return handBtn;
+  }
+
+  // get total num of the dice
+  public int getNumberOfDice(){
+    return numberOfDice;
   }
 }

@@ -55,8 +55,11 @@ public class PaneController extends GameGrid {
       while (true) {
         Monitor.putSleep();
         getNp().getHandBtn().show(1);
-        getNp().roll(getNp().getDieValue(getGpModel()));
-        delay(1000);
+        // 连续的摇骰子
+        for(int i = 0; i < getNp().getNumberOfDice(); i++){
+          getNp().roll(getNp().getDieValue(getGpModel()));
+          delay(1000);
+        }
         getNp().getHandBtn().show(0);
       }
     }
