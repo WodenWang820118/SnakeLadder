@@ -155,8 +155,13 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
         n ++;
       }
 
-
-      gpModel.switchToNextPuppet();
+      if(gpModel.getPuppet().getGoBack() == true){
+        gpModel.switchToNextPuppet();
+        gpModel.switchToNextPuppet();
+        gpModel.getPuppet().setGoBack(false);
+      }else{
+        gpModel.switchToNextPuppet();
+      }
       // System.out.println("current puppet - auto: " + gp.getPuppet().getPuppetName() + "  " + gp.getPuppet().isAuto() );
 
       if (isAuto) {
