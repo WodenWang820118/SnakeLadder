@@ -15,10 +15,14 @@ public class PaneController extends GameGrid {
   
   public GamePaneController gpController;
   public NavigationPaneController npController;
+  private Cup cup;
+  
 
-  public PaneController(GamePaneController gpController, NavigationPaneController npController, Properties properties) {
+  public PaneController(GamePaneController gpController, NavigationPaneController npController, Cup cup, Properties properties) {
     this.gpController = gpController;
     this.npController = npController;
+    this.cup = cup;
+    cup.setNavigationPane(npController.getNp());
     new SimulatedPlayer().start();
 
     gpController.getGpModel().createSnakesLadders(properties);
@@ -50,13 +54,20 @@ public class PaneController extends GameGrid {
     return npController.getNp();
   }
 
+  public Cup getCup(){
+    return cup;
+  }
+
   private class SimulatedPlayer extends Thread {
     public void run() {
       while (true) {
         Monitor.putSleep();
         getNp().getHandBtn().show(1);
-        getNp().roll(getNp().getDieValue(getGpModel()));
-        delay(1000);
+        // 连续的摇骰子
+        for(int i = 0; i < getNp().getNumberOfDice(); i++){
+          getNp().roll(getNp().getDieValue(getGpModel()));
+          delay(1000);
+        }
         getNp().getHandBtn().show(0);
       }
     }
