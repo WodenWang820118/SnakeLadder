@@ -28,6 +28,8 @@ public class Puppet extends Actor {
   // task3
   private boolean ifGoBack = false;
 
+  private BasicToggleStrategy toggleStrategy = new BasicToggleStrategy();
+
   public Puppet(PaneController pc,  String puppetImage) {
     super(puppetImage);
     this.pc = pc;
@@ -153,6 +155,14 @@ public class Puppet extends Actor {
         } else {
           setActEnabled(false);
           np.prepareRoll(cellIndex);
+        }
+        if(isAuto){
+          boolean toToggle = toggleStrategy.checkIfToggle(NavigationPane, GamePane); 
+          if (toToggle){
+            NavigationPane.toggleButton(true);
+          }else{
+            NavigationPane.toggleButton(false);
+          }
         }
       }
     }

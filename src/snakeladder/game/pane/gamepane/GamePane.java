@@ -77,4 +77,14 @@ public class GamePane extends GameGrid {
     double b = (double)(y1 * x0 - y0 * x1) / (y1 - y0);
     return (int)(a * y + b);
   }
+  public void reverseAllConnections(){
+    for(Connection conn : connections){
+      conn.reverseConnection();
+    }
+  }
+
+
+  public int getCurrentPuppetIndex() {
+    return 0;
+  }
 }

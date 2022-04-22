@@ -93,6 +93,18 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
     return npModel.getDieValue(gpModel);
   }
 
+  public void toggleButton(boolean toCheck){
+    //只要toggle button有变动就reverseAllConnection
+    if(toggleCheck.isChecked()&& toCheck){
+      toggleCheck.setChecked(false);
+      pc.getGp().reverseAllConnections();
+    }
+    else if (!toggleCheck.isChecked() && toCheck){
+      toggleCheck.setChecked(true);
+      pc.getGp().reverseAllConnections();
+    }
+  }
+
   public void createGui() {
     addActor(new Actor("sprites/dieboard.gif"), dieBoardLocation);
 
@@ -114,6 +126,7 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
       @Override
       public void buttonChecked(GGCheckButton ggCheckButton, boolean checked) {
         isToggle = checked;
+        pc.getGp().reverseAllConnections();
       }
     });
 
