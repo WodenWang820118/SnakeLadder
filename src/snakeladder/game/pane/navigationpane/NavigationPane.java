@@ -90,6 +90,7 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
     setupDieValues(gpModel);
     // setup the record stats for tracking later
     this.npModel.setupPlayerRecords(gpModel);
+    this.npModel.setupPlayerTraversalRecord(gpModel);
   }
 
   public int getDieValue(GamePaneModel gpModel) {
@@ -134,7 +135,7 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
 
   public void autoToggle(boolean check){
     if(check){
-       pc.getGp().changeAllConnection();
+      pc.getGp().changeAllConnection();
     }else{
       pc.getGp().resetAllConnection();
     }
@@ -146,8 +147,10 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
       playSound(GGSound.FADE);
       statusBoard.showStatus("Click the hand!");
       statusBoard.showResult("Game over");
-      //TODO: show all the player statistics
+      // task 5 showing the stats
       statusBoard.showStats(pc);
+      statusBoard.showTraversals(pc);
+      
       npModel.setGameOver(true);
       handBtn.setEnabled(true);
 

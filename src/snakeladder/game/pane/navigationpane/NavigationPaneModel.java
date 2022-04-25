@@ -15,14 +15,17 @@ public class NavigationPaneModel {
   private volatile boolean isGameOver = false;
   private List<List<Integer>> dieValues = new ArrayList<>();
   private Properties properties;
-  // the second element as a hashmap stores the die records
-  private Map<Integer, Integer> playerRecord = new HashMap<>();
   // the first element of the hashmap is the puppetIndex
+  // the second element as a hashmap stores the die records
   private Map<Integer, HashMap<Integer, Integer>> diceRollingRecord = new HashMap<>();
+  private Map<Integer, Integer> playerRecord;
+  // traversal records
+  private Map<Integer, HashMap<String, Integer>> traversalRecord = new HashMap<>();
+  private Map<String, Integer> personalTraversal;
+  
 
   public NavigationPaneModel(Properties properties) {
     this.properties = properties;
-    this.initRecordStats();
   }
 
   // adds the initial record stats to each player by the counter
@@ -30,21 +33,36 @@ public class NavigationPaneModel {
   // called after setupDieValues()
   public void setupPlayerRecords(GamePaneModel gpModel) {
     for (int i = 0; i < gpModel.getNumberOfPlayers(); i++) {
-      diceRollingRecord.put(i, (HashMap<Integer, Integer>) playerRecord);
+      diceRollingRecord.put(i, (HashMap<Integer, Integer>) this.initRecordStats());
+    }
+  }
+
+  public void setupPlayerTraversalRecord(GamePaneModel gpModel) {
+    for (int i = 0; i < gpModel.getNumberOfPlayers(); i++) {
+      traversalRecord.put(i, (HashMap<String, Integer>) this.initTraversalStats());
     }
   }
 
   // initializes the record stats according to the number of dice
-  public void initRecordStats() {
+  public Map<Integer, Integer> initRecordStats() {
     int numberOfDice =  //Number of six-sided dice
             (properties.getProperty("dice.count") == null)
                     ? 1  // default
                     : Integer.parseInt(properties.getProperty("dice.count"));
     int counter = numberOfDice * 6;
     // the minimum value is the number of dice
+    this.playerRecord = new HashMap<>();
     for (int i = numberOfDice; i <= counter; i++) {
       playerRecord.put(i, 0);
     }
+    return playerRecord;
+  }
+
+  public Map<String, Integer> initTraversalStats() {
+    this.personalTraversal = new HashMap<>();
+    personalTraversal.put("up", 0);
+    personalTraversal.put("down", 0);
+    return personalTraversal;
   }
 
   public void setupDieValues(GamePaneModel gpModel) {
@@ -108,4 +126,7 @@ public class NavigationPaneModel {
     return (HashMap<Integer, HashMap<Integer, Integer>>) diceRollingRecord;
   }
 
+  public HashMap<Integer, HashMap<String, Integer>> getTraversalRecord() {
+    return (HashMap<Integer, HashMap<String, Integer>>) traversalRecord;
+  }
 }
