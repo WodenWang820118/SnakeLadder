@@ -22,7 +22,7 @@ public class Cup {
     Die die = new Die(nb, this, len+1);
     dice.add(die);
     numRolled += nb;
-    updatePlayerStats(nb);
+    updatePlayerStats(numRolled);
   }
 
   public void updatePlayerStats(int nb) {
