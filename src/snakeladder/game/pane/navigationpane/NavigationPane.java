@@ -117,11 +117,27 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
       @Override
       public void buttonChecked(GGCheckButton ggCheckButton, boolean checked) {
         isToggle = checked;
+        // When toggle is clicked,reverse all connections.
+        // When you cancel toggle, change back to the original Connection.
+        if(isToggle){
+          pc.getGp().changeAllConnection();
+          isToggle = false;
+        }else if(isToggle == false){
+          pc.getGp().resetAllConnection();
+        }
       }
     });
 
     dieBoard.addDieButtons(this);
     statusBoard.addStatusFields(this);
+  }
+
+  public void autoToggle(boolean check){
+    if(check){
+       pc.getGp().changeAllConnection();
+    }else{
+      pc.getGp().resetAllConnection();
+    }
   }
 
   public void prepareRoll(int currentIndex) {

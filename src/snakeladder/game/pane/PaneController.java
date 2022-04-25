@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import ch.aplu.jgamegrid.GameGrid;
 import ch.aplu.util.Monitor;
+import snakeladder.game.pane.gamepane.ChangeConnectionStrategy;
 import snakeladder.game.pane.gamepane.GamePane;
 import snakeladder.game.pane.gamepane.GamePaneController;
 import snakeladder.game.pane.gamepane.GamePaneModel;
@@ -16,12 +17,14 @@ public class PaneController extends GameGrid {
   public GamePaneController gpController;
   public NavigationPaneController npController;
   private Cup cup;
+  private ChangeConnectionStrategy cc;
   
 
-  public PaneController(GamePaneController gpController, NavigationPaneController npController, Cup cup, Properties properties) {
+  public PaneController(GamePaneController gpController, NavigationPaneController npController, Cup cup, ChangeConnectionStrategy cc, Properties properties) {
     this.gpController = gpController;
     this.npController = npController;
     this.cup = cup;
+    this.cc = cc;
     cup.setPaneController(this);
     new SimulatedPlayer().start();
 
@@ -58,12 +61,16 @@ public class PaneController extends GameGrid {
     return cup;
   }
 
+  public ChangeConnectionStrategy getCC(){
+    return cc;
+  }
+
   private class SimulatedPlayer extends Thread {
     public void run() {
       while (true) {
         Monitor.putSleep();
         getNp().getHandBtn().show(1);
-        // according to the number of dice, roll the dice
+        // Roll the dice continuously
         for(int i = 0; i < getNp().getNumberOfDice(); i++){
           getNp().roll(getNp().getDieValue(getGpModel()));
           delay(1000);
