@@ -1,7 +1,9 @@
 package snakeladder.game.pane.navigationpane;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import snakeladder.game.pane.gamepane.GamePaneModel;
@@ -13,9 +15,36 @@ public class NavigationPaneModel {
   private volatile boolean isGameOver = false;
   private List<List<Integer>> dieValues = new ArrayList<>();
   private Properties properties;
+  // the second element as a hashmap stores the die records
+  private Map<Integer, Integer> playerRecord = new HashMap<>();
+  // the first element of the hashmap is the puppetIndex
+  private Map<Integer, HashMap<Integer, Integer>> diceRollingRecord = new HashMap<>();
 
   public NavigationPaneModel(Properties properties) {
     this.properties = properties;
+    this.initRecordStats();
+  }
+
+  // adds the initial record stats to each player by the counter
+  // note the counter is also used as the puppetIndex to track the puppet
+  // called after setupDieValues()
+  public void setupPlayerRecords(GamePaneModel gpModel) {
+    for (int i = 0; i < gpModel.getNumberOfPlayers(); i++) {
+      diceRollingRecord.put(i, (HashMap<Integer, Integer>) playerRecord);
+    }
+  }
+
+  // initializes the record stats according to the number of dice
+  public void initRecordStats() {
+    int numberOfDice =  //Number of six-sided dice
+            (properties.getProperty("dice.count") == null)
+                    ? 1  // default
+                    : Integer.parseInt(properties.getProperty("dice.count"));
+    int counter = numberOfDice * 6;
+    // the minimum value is the number of dice
+    for (int i = numberOfDice; i <= counter; i++) {
+      playerRecord.put(i, 0);
+    }
   }
 
   public void setupDieValues(GamePaneModel gpModel) {
@@ -73,6 +102,10 @@ public class NavigationPaneModel {
 
   public void setGameOver(boolean isGameOver) {
     this.isGameOver = isGameOver;
+  }
+
+  public HashMap<Integer, HashMap<Integer, Integer>> getDiceRollingRecord() {
+    return (HashMap<Integer, HashMap<Integer, Integer>>) diceRollingRecord;
   }
 
 }

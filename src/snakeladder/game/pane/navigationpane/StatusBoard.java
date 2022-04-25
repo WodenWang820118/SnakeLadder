@@ -4,7 +4,15 @@ import ch.aplu.jgamegrid.Actor;
 import ch.aplu.jgamegrid.GGTextField;
 import ch.aplu.jgamegrid.GameGrid;
 import ch.aplu.jgamegrid.Location;
+import snakeladder.game.pane.PaneController;
+
 import java.awt.Font;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class StatusBoard extends GameGrid {
   private GGTextField pipsField;
@@ -63,5 +71,38 @@ public class StatusBoard extends GameGrid {
   public void showResult(String text) {
     resultField.setText(text);
     System.out.println("Result: " + text);
+  }
+  
+  public void showStats(PaneController pc) {
+    Map<Integer, HashMap<Integer, Integer>> diceRollingRecord
+      = pc.getNpModel().getDiceRollingRecord();
+
+    for (Entry<Integer, HashMap<Integer, Integer>> entry
+          : diceRollingRecord.entrySet()) {
+      int puppetIndex = entry.getKey();
+      Map<Integer, Integer> playerRecord = entry.getValue();
+      System.out.print("Player " + (puppetIndex + 1) + " rolled: ");
+      
+      // get the maximum value of keys for printing purpose
+      List<Integer> diceValues = new ArrayList<Integer>();
+      for (Integer key: playerRecord.keySet()) {
+        diceValues.add(key);
+      }
+
+      int maxValue = Collections.max(diceValues);
+
+      // printing stats
+      for (Entry<Integer, Integer> entry2 : playerRecord.entrySet()) {
+        int diceValue = entry2.getKey();
+        int diceCount = entry2.getValue();
+       
+        if (entry2.getKey() == maxValue) {
+          System.out.print(diceValue + "-" + diceCount);
+        } else {
+          System.out.print(diceValue + "-" + diceCount + ", ");
+        }
+      }
+      System.out.println();
+    }
   }
 }

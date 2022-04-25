@@ -22,7 +22,7 @@ public class PaneController extends GameGrid {
     this.gpController = gpController;
     this.npController = npController;
     this.cup = cup;
-    cup.setNavigationPane(npController.getNp());
+    cup.setPaneController(this);
     new SimulatedPlayer().start();
 
     gpController.getGpModel().createSnakesLadders(properties);
@@ -63,7 +63,7 @@ public class PaneController extends GameGrid {
       while (true) {
         Monitor.putSleep();
         getNp().getHandBtn().show(1);
-        // 连续的摇骰子
+        // according to the number of dice, roll the dice
         for(int i = 0; i < getNp().getNumberOfDice(); i++){
           getNp().roll(getNp().getDieValue(getGpModel()));
           delay(1000);
