@@ -161,6 +161,7 @@ public class Puppet extends Actor {
         if(isAuto == true){
           boolean Toggle = pc.getCC().checkChange(pc.gpController, np);
           if(Toggle){
+            // change connection
             np.autoToggle(true);
           }else{
             np.autoToggle(false);

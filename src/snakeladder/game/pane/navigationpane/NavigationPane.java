@@ -117,6 +117,9 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
         // toggle
         if(isToggle){
           pc.getGp().changeAllConnection();
+          isToggle = false;
+        }else if(isToggle == false){
+          pc.getGp().resetAllConnection();
         }
       }
     });
@@ -126,12 +129,10 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
   }
 
   public void autoToggle(boolean check){
-    if(toggleCheck.isChecked()){
-      if(check){
-        toggleCheck.setChecked(true);
-      }else{
-        toggleCheck.setChecked(false);
-      }
+    if(check){
+       pc.getGp().changeAllConnection();
+    }else{
+      pc.getGp().resetAllConnection();
     }
   }
 

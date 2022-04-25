@@ -43,10 +43,10 @@ public class ChangeConnection implements ChangeConnectionStrategy{
                 }
             }
         }
-        System.out.println(numberOfUp);
-        System.out.println(numberOfDown);
-        
-        if(numberOfUp >= numberOfDown){
+
+        // if numberOfUp > numberOfDown, resetConnection
+        // if numberOfUp < numberOfDown, changeConnection
+        if(numberOfUp < numberOfDown){
             return true;
         }else{
             return false;

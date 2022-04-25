@@ -85,4 +85,10 @@ public class GamePane extends GameGrid {
       con.changeConnection();
     }
   }
+
+  public void resetAllConnection(){
+    for(Connection con : pc.getGpModel().getConnections()){
+      con.resetConnection();
+    }
+  }
 }

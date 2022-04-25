@@ -9,11 +9,23 @@ public abstract class Connection {
   private int cellEnd;
   private String imagePath;
 
+  // for reset connection
+  private Location reLocStart;
+  private Location reLocEnd;
+  private int reCellStart;
+  private int reCellEnd;
+
+
   Connection(int cellStart, int cellEnd) {
     this.cellStart = cellStart;
     this.cellEnd = cellEnd;
     locStart = GamePane.cellToLocation(cellStart);
     locEnd = GamePane.cellToLocation(cellEnd);
+
+    reCellStart = cellStart;
+    reCellEnd = cellEnd;
+    reLocStart = locStart;
+    reLocEnd = locEnd;
   }
 
   public Location getLocStart() {
@@ -58,5 +70,13 @@ public abstract class Connection {
     int change2 = cellEnd;
     cellEnd = cellStart;
     cellStart = change2;
+  }
+
+  public void resetConnection(){
+    locEnd = reLocEnd;
+    locStart = reLocStart;
+
+    cellEnd = reCellEnd;
+    cellStart = reCellStart;
   }
 }
