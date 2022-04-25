@@ -105,4 +105,24 @@ public class StatusBoard extends GameGrid {
       System.out.println();
     }
   }
+
+  public void showTraversals(PaneController pc) {
+    HashMap<Integer, HashMap<String, Integer>> traversals = pc.getNpModel().getTraversalRecord();
+    for (Entry<Integer, HashMap<String, Integer>> entry : traversals.entrySet()) {
+      int playerIndex = entry.getKey();
+      Map<String, Integer> playerTraversals = entry.getValue();
+
+      System.out.print("Player " + (playerIndex + 1) + " traversed: ");
+      for (Entry<String, Integer> entry2 : playerTraversals.entrySet()) {
+        String traversal = entry2.getKey();
+        int count = entry2.getValue();
+        if (traversal.equals("up")) {
+          System.out.print(traversal + "-" + count + ", ");
+        } else if (traversal.equals("down")) {
+          System.out.print(traversal + "-" + count);
+        }
+      }
+      System.out.println();
+    }
+  }
 }

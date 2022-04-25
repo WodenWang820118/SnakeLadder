@@ -19,7 +19,7 @@ public class Cup {
   // according to the property setting
   public void roll(int nb) {
     int len = dice.size();
-    Die die = new Die(nb, this, len+1);
+    Die die = new Die(nb, this, len + 1);
     dice.add(die);
     numRolled += nb;
     updatePlayerStats(numRolled);
