@@ -77,4 +77,12 @@ public class GamePane extends GameGrid {
     double b = (double)(y1 * x0 - y0 * x1) / (y1 - y0);
     return (int)(a * y + b);
   }
+
+  // task4
+  // change all connection
+  public void changeAllConnection(){
+    for(Connection con : pc.getGpModel().getConnections()){
+      con.changeConnection();
+    }
+  }
 }

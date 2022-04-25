@@ -43,7 +43,20 @@ public abstract class Connection {
   public double xLocationPercent(int locationCell) {
     return (double) locationCell / GamePane.NUMBER_HORIZONTAL_CELLS;
   }
+
   public double yLocationPercent(int locationCell) {
     return (double) locationCell / GamePane.NUMBER_VERTICAL_CELLS;
+  }
+
+  // change connection, switch the starting and ending points
+  private Location change1;
+  public void changeConnection(){
+    change1 = locEnd;
+    locEnd = locStart;
+    locStart = change1;
+
+    int change2 = cellEnd;
+    cellEnd = cellStart;
+    cellStart = change2;
   }
 }

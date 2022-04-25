@@ -114,11 +114,25 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
       @Override
       public void buttonChecked(GGCheckButton ggCheckButton, boolean checked) {
         isToggle = checked;
+        // toggle
+        if(isToggle){
+          pc.getGp().changeAllConnection();
+        }
       }
     });
 
     dieBoard.addDieButtons(this);
     statusBoard.addStatusFields(this);
+  }
+
+  public void autoToggle(boolean check){
+    if(toggleCheck.isChecked()){
+      if(check){
+        toggleCheck.setChecked(true);
+      }else{
+        toggleCheck.setChecked(false);
+      }
+    }
   }
 
   public void prepareRoll(int currentIndex) {
@@ -185,7 +199,6 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
 
   int index = 0;
   public void prepareBeforeRoll() {
-    // 让手可以动
     if (index == numberOfDice){
       handBtn.setEnabled(false);
       index = 0;

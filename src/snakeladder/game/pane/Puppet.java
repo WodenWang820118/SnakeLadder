@@ -3,6 +3,8 @@ package snakeladder.game.pane;
 import ch.aplu.jgamegrid.Actor;
 import ch.aplu.jgamegrid.GGSound;
 import ch.aplu.jgamegrid.Location;
+import snakeladder.game.pane.gamepane.ChangeConnection;
+import snakeladder.game.pane.gamepane.ChangeConnectionStrategy;
 import snakeladder.game.pane.gamepane.Connection;
 import snakeladder.game.pane.gamepane.GamePane;
 import snakeladder.game.pane.gamepane.Snake;
@@ -154,6 +156,17 @@ public class Puppet extends Actor {
           setActEnabled(false);
           np.prepareRoll(cellIndex);
         }
+
+        // task4
+        if(isAuto == true){
+          boolean Toggle = pc.getCC().checkChange(pc.gpController, np);
+          if(Toggle){
+            np.autoToggle(true);
+          }else{
+            np.autoToggle(false);
+          }
+        }
+        
       }
     }
   }
