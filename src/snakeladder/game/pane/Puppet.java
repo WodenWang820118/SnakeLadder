@@ -9,6 +9,8 @@ import snakeladder.game.pane.gamepane.Snake;
 import snakeladder.game.pane.navigationpane.NavigationPane;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Puppet extends Actor {
 
@@ -22,6 +24,8 @@ public class Puppet extends Actor {
   private int dy;
   private boolean isAuto;
   private String puppetName;
+  // TODO: the dice rolling record should be stored in the puppet for each player
+  private List<Integer> diceRollingRecord;
 
   // task2
   private boolean notDown = false;
@@ -33,6 +37,7 @@ public class Puppet extends Actor {
     this.pc = pc;
     this.gp = pc.gpController.getGp();
     this.np = pc.npController.getNp();
+    this.diceRollingRecord = new ArrayList<>();
   }
 
   public boolean isAuto() {
@@ -60,9 +65,9 @@ public class Puppet extends Actor {
     this.nbSteps = nbSteps;
 
     // Check if a die roll a “1”
-    if(nbSteps == np.getNumberOfDice()){
+    if (nbSteps == np.getNumberOfDice()) {
       notDown = true;
-    }else{
+    } else {
       notDown = false;
     }
 
