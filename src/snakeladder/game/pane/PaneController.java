@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import ch.aplu.jgamegrid.GameGrid;
 import ch.aplu.util.Monitor;
+import snakeladder.game.pane.gamepane.ChangeConnectionStrategy;
 import snakeladder.game.pane.gamepane.GamePane;
 import snakeladder.game.pane.gamepane.GamePaneController;
 import snakeladder.game.pane.gamepane.GamePaneModel;
@@ -15,10 +16,16 @@ public class PaneController extends GameGrid {
   
   public GamePaneController gpController;
   public NavigationPaneController npController;
+  private Cup cup;
+  private ChangeConnectionStrategy cc;
+  
 
-  public PaneController(GamePaneController gpController, NavigationPaneController npController, Properties properties) {
+  public PaneController(GamePaneController gpController, NavigationPaneController npController, Cup cup, ChangeConnectionStrategy cc, Properties properties) {
     this.gpController = gpController;
     this.npController = npController;
+    this.cup = cup;
+    this.cc = cc;
+    cup.setNavigationPane(npController.getNp());
     new SimulatedPlayer().start();
 
     gpController.getGpModel().createSnakesLadders(properties);
@@ -50,13 +57,24 @@ public class PaneController extends GameGrid {
     return npController.getNp();
   }
 
+  public Cup getCup(){
+    return cup;
+  }
+
+  public ChangeConnectionStrategy getCC(){
+    return cc;
+  }
+
   private class SimulatedPlayer extends Thread {
     public void run() {
       while (true) {
         Monitor.putSleep();
         getNp().getHandBtn().show(1);
-        getNp().roll(getNp().getDieValue(getGpModel()));
-        delay(1000);
+        // Roll the dice continuously
+        for(int i = 0; i < getNp().getNumberOfDice(); i++){
+          getNp().roll(getNp().getDieValue(getGpModel()));
+          delay(1000);
+        }
         getNp().getHandBtn().show(0);
       }
     }
