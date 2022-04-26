@@ -44,7 +44,7 @@ public class NavigationPaneModel {
   }
 
   // initializes the record stats according to the number of dice
-  public Map<Integer, Integer> initRecordStats() {
+  private Map<Integer, Integer> initRecordStats() {
     int numberOfDice =  //Number of six-sided dice
             (properties.getProperty("dice.count") == null)
                     ? 1  // default
@@ -58,7 +58,7 @@ public class NavigationPaneModel {
     return playerRecord;
   }
 
-  public Map<String, Integer> initTraversalStats() {
+  private Map<String, Integer> initTraversalStats() {
     this.personalTraversal = new HashMap<>();
     personalTraversal.put("up", 0);
     personalTraversal.put("down", 0);
