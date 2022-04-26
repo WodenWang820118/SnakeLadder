@@ -61,14 +61,16 @@ public class Puppet extends Actor {
     }
     this.nbSteps = nbSteps;
 
-    // Check if a die roll a “1”
+    decideDown(nbSteps);
+    setActEnabled(true);
+  }
+
+  private void decideDown(int nbSteps) {
     if (nbSteps == np.getNumberOfDice()) {
       notDown = true;
     } else {
       notDown = false;
     }
-
-    setActEnabled(true);
   }
 
   public void resetToStartingPoint() {
@@ -97,10 +99,12 @@ public class Puppet extends Actor {
     
     // Animation: Move on connection
     // end-start < 0 means met the head of the snake
+    // currentCon.getCellEnd() - currentCon.getCellStart() < 0 means met the head of the snake
     // if met the head of the snake but notDown == true, not go down
     // if met the head of the snake and notDown == false, can go down
+    // climb the ladder
     if (currentCon != null && 
-        !(notDown && (currentCon.getCellEnd() - currentCon.getCellStart()) < 0)) {
+        !((currentCon.getCellEnd() - currentCon.getCellStart()) < 0)) {
       int x = gp.x(y, currentCon);
       setPixelLocation(new Point(x, y));
       y += dy;
@@ -140,6 +144,7 @@ public class Puppet extends Actor {
       if (nbSteps == 0) {
         // Check if on connection start
         // check notDown and if met a head of the snake
+        // TODO: glitch
         if ((currentCon = gp.getConnectionAt(getLocation())) != null && 
             !(notDown && (currentCon.getCellEnd() - currentCon.getCellStart()) < 0)) {
 
@@ -151,7 +156,6 @@ public class Puppet extends Actor {
             dy = -gp.animationStep;
           if (currentCon instanceof Snake) {
             // update the traversal record
-            // TODO: update the traversal counter correctly, but cannot distinguish the unique players
             personalRecord.put("down", personalRecord.get("down") + 1);
             pc.npController.getStatusBoard().showStatus("Digesting...");
             np.playSound(GGSound.MMM);
