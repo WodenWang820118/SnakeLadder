@@ -98,13 +98,10 @@ public class Puppet extends Actor {
     Map<String, Integer> personalRecord = traversalRecords.get(puppetIndex);
     
     // Animation: Move on connection
-    // end-start < 0 means met the head of the snake
-    // currentCon.getCellEnd() - currentCon.getCellStart() < 0 means met the head of the snake
-    // if met the head of the snake but notDown == true, not go down
-    // if met the head of the snake and notDown == false, can go down
-    // climb the ladder
-    if (currentCon != null && 
-        !((currentCon.getCellEnd() - currentCon.getCellStart()) < 0)) {
+    // ((currentCon.getCellEnd() - currentCon.getCellStart()) < 0) -> snake head
+    // if going back equals to true, trigger the animation and move
+    if ((currentCon != null && !((currentCon.getCellEnd() - currentCon.getCellStart()) < 0))
+         || (currentCon != null && getGoBack())) {
       int x = gp.x(y, currentCon);
       setPixelLocation(new Point(x, y));
       y += dy;
