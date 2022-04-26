@@ -29,6 +29,7 @@ public class Puppet extends Actor {
   private boolean notDown = false;
   // task3
   private boolean ifGoBack = false;
+  boolean preState = false;
 
   public Puppet(PaneController pc,  String puppetImage) {
     super(puppetImage);
@@ -68,8 +69,13 @@ public class Puppet extends Actor {
   private void decideDown(int nbSteps) {
     if (nbSteps == np.getNumberOfDice()) {
       notDown = true;
+      preState = true;
     } else {
-      notDown = false;
+      if (preState) {
+        notDown = true;
+      } else {
+        notDown = false;
+      }
     }
   }
 
@@ -98,13 +104,10 @@ public class Puppet extends Actor {
     Map<String, Integer> personalRecord = traversalRecords.get(puppetIndex);
     
     // Animation: Move on connection
-    // end-start < 0 means met the head of the snake
-    // currentCon.getCellEnd() - currentCon.getCellStart() < 0 means met the head of the snake
-    // if met the head of the snake but notDown == true, not go down
-    // if met the head of the snake and notDown == false, can go down
-    // climb the ladder
-    if (currentCon != null && 
-        !((currentCon.getCellEnd() - currentCon.getCellStart()) < 0)) {
+    // ((currentCon.getCellEnd() - currentCon.getCellStart()) < 0) -> snake head
+    // if going back equals to true, trigger the animation and move
+    if ((currentCon != null && !((currentCon.getCellEnd() - currentCon.getCellStart()) < 0 && notDown))
+         || (currentCon != null && getGoBack())) {
       int x = gp.x(y, currentCon);
       setPixelLocation(new Point(x, y));
       y += dy;
@@ -144,10 +147,9 @@ public class Puppet extends Actor {
       if (nbSteps == 0) {
         // Check if on connection start
         // check notDown and if met a head of the snake
-        // TODO: glitch
         if ((currentCon = gp.getConnectionAt(getLocation())) != null && 
-            !(notDown && (currentCon.getCellEnd() - currentCon.getCellStart()) < 0)) {
-
+            !(notDown && (currentCon.getCellEnd() - currentCon.getCellStart()) < 0)
+            || (currentCon != null && getGoBack())) {
           gp.setSimulationPeriod(50);
           y = gp.toPoint(currentCon.getLocStart()).y;
           if (currentCon.getLocEnd().y > currentCon.getLocStart().y)

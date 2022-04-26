@@ -22,7 +22,6 @@ public class Cup {
     Die die = new Die(nb, this, len + 1);
     dice.add(die);
     numRolled += nb;
-    updatePlayerStats(numRolled);
   }
 
   public void updatePlayerStats(int nb) {
@@ -38,7 +37,8 @@ public class Cup {
   public void endRoll(int numberOfDiceUsed){
     if (numberOfDiceUsed == pc.getNp().getNumberOfDice()){
       pc.getNp().startMoving(numRolled);
-      // reset
+      // update the stats and then reset
+      updatePlayerStats(numRolled);
       this.numRolled = 0;
       this.dice.clear();
     }
