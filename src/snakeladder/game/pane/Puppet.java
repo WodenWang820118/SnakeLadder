@@ -3,14 +3,14 @@ package snakeladder.game.pane;
 import ch.aplu.jgamegrid.Actor;
 import ch.aplu.jgamegrid.GGSound;
 import ch.aplu.jgamegrid.Location;
-import snakeladder.game.pane.gamepane.ChangeConnection;
-import snakeladder.game.pane.gamepane.ChangeConnectionStrategy;
 import snakeladder.game.pane.gamepane.Connection;
 import snakeladder.game.pane.gamepane.GamePane;
 import snakeladder.game.pane.gamepane.Snake;
 import snakeladder.game.pane.navigationpane.NavigationPane;
 
 import java.awt.Point;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Puppet extends Actor {
 
@@ -62,9 +62,9 @@ public class Puppet extends Actor {
     this.nbSteps = nbSteps;
 
     // Check if a die roll a “1”
-    if(nbSteps == np.getNumberOfDice()){
+    if (nbSteps == np.getNumberOfDice()) {
       notDown = true;
-    }else{
+    } else {
       notDown = false;
     }
 
@@ -89,6 +89,11 @@ public class Puppet extends Actor {
       if (!isHorzMirror())
         setHorzMirror(true);
     }
+
+    // task5 update the traversals
+    HashMap<Integer, HashMap<String, Integer>> traversalRecords = pc.getNpModel().getTraversalRecord();
+    int puppetIndex = pc.getGpModel().getCurrentPuppetIndex();
+    Map<String, Integer> personalRecord = traversalRecords.get(puppetIndex);
     
     // Animation: Move on connection
     // end-start < 0 means met the head of the snake
@@ -145,10 +150,15 @@ public class Puppet extends Actor {
           else
             dy = -gp.animationStep;
           if (currentCon instanceof Snake) {
+            // update the traversal record
+            // TODO: update the traversal counter correctly, but cannot distinguish the unique players
+            personalRecord.put("down", personalRecord.get("down") + 1);
             pc.npController.getStatusBoard().showStatus("Digesting...");
             np.playSound(GGSound.MMM);
           }
           else {
+            // update the traversal record
+            personalRecord.put("up", personalRecord.get("up") + 1);
             pc.npController.getStatusBoard().showStatus("Climbing...");
             np.playSound(GGSound.BOING);
           }

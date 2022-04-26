@@ -28,6 +28,7 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
   private final int RANDOM_ROLL_TAG = -1;
   private final Location dieBoardLocation = new Location(100, 180);
   private int numberOfDice;
+  private int numberOfDiceUsed = 0;
 
   // animation and toggle location
   private final Location handBtnLocation = new Location(110, 70);
@@ -87,6 +88,9 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
     this.gpModel = pc.gpController.getGpModel();
     this.npModel = pc.npController.getNpModel();
     setupDieValues(gpModel);
+    // setup the record stats for tracking later
+    this.npModel.setupPlayerRecords(gpModel);
+    this.npModel.setupPlayerTraversalRecord(gpModel);
   }
 
   public int getDieValue(GamePaneModel gpModel) {
@@ -114,8 +118,8 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
       @Override
       public void buttonChecked(GGCheckButton ggCheckButton, boolean checked) {
         isToggle = checked;
-        // When clicking toggle mode, reverse all Connection
-        // When the toggle mode is cancelled, the All Connection is restored to its original state
+        // When toggle is clicked,reverse all connections.
+        // When you cancel toggle, change back to the original Connection.
         if(isToggle){
           pc.getGp().changeAllConnection();
           isToggle = false;
@@ -139,8 +143,11 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
       playSound(GGSound.FADE);
       statusBoard.showStatus("Click the hand!");
       statusBoard.showResult("Game over");
+      // task 5 showing the stats
+      statusBoard.showStats(pc);
+      statusBoard.showTraversals(pc);
+      
       npModel.setGameOver(true);
-      // isGameOver = true;
       handBtn.setEnabled(true);
 
       List<String> playerPositions = new ArrayList<>();
@@ -154,7 +161,6 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
       statusBoard.showStatus("Click the hand!");
       String result = gpModel.getPuppet().getPuppetName() + " - pos: " + currentIndex;
       statusBoard.showResult(result);
-
 
       // task3 Check if Puppet are on the same grid
       int index = gpModel.getCurrentPuppetIndex();
@@ -171,7 +177,7 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
         gpModel.switchToNextPuppet();
         gpModel.switchToNextPuppet();
         gpModel.getPuppet().setGoBack(false);
-      }else{
+      } else {
         gpModel.switchToNextPuppet();
       }
       // System.out.println("current puppet - auto: " + gp.getPuppet().getPuppetName() + "  " + gp.getPuppet().isAuto() );
@@ -195,13 +201,13 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
     gpModel.getPuppet().go(nb);
   }
 
-  int index = 0;
   public void prepareBeforeRoll() {
-    if (index == numberOfDice){
+    // enable the hand animation
+    if (numberOfDiceUsed == numberOfDice){
       handBtn.setEnabled(false);
-      index = 0;
-    }else{
-      index ++;
+      numberOfDiceUsed = 0;
+    } else {
+      numberOfDiceUsed ++;
     }
     // First click after game over
     if (npModel.isGameOver()) {

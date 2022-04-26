@@ -1,42 +1,55 @@
 package snakeladder.game.pane;
 
-import snakeladder.game.pane.navigationpane.NavigationPane;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Cup {
-    private List<Die> dice;
-    private NavigationPane np;
-    private int numRolled;
+  private List<Die> dice;
+  private PaneController pc;
+  private int numRolled;
 
-    public Cup( ){
-        this.dice = new ArrayList<>();
-        this.numRolled = 0;
-    }
+  public Cup(){
+    this.dice = new ArrayList<>();
+    this.numRolled = 0;
+  }
 
-    public void roll(int nb){
-        int len = dice.size();
-        Die die = new Die(nb, this, len+1);
-        dice.add(die);
-        numRolled += nb;
-    }
+  // the player on the paneController roll a number of dice
+  // according to the property setting
+  public void roll(int nb) {
+    int len = dice.size();
+    Die die = new Die(nb, this, len + 1);
+    dice.add(die);
+    numRolled += nb;
+    updatePlayerStats(numRolled);
+  }
 
-    // when roll finish start moving
-    public void endRoll(int index){
-        if (index == np.getNumberOfDice()){
-            np.startMoving(numRolled);
-            // reset
-            this.numRolled = 0;
-            this.dice.clear();
-        }
-    }
+  public void updatePlayerStats(int nb) {
+    int puppetIndex = pc.getGpModel().getCurrentPuppetIndex();
+    Map<Integer, HashMap<Integer, Integer>> diceRollingRecord =
+      pc.getNpModel().getDiceRollingRecord();
+    Map<Integer, Integer> playerRecord = diceRollingRecord.get(puppetIndex);
+    // update the rolling record
+    playerRecord.put(nb, playerRecord.get(nb) + 1);
+  }
 
-    // for addActor()
-    public List<Die> getDice(){
-        return this.dice;
+  // when roll finish start moving
+  public void endRoll(int numberOfDiceUsed){
+    if (numberOfDiceUsed == pc.getNp().getNumberOfDice()){
+      pc.getNp().startMoving(numRolled);
+      // reset
+      this.numRolled = 0;
+      this.dice.clear();
     }
+  }
 
-    public void setNavigationPane(NavigationPane np){
-      this.np = np;
-    }
+  // for addActor()
+  public List<Die> getDice(){
+    return this.dice;
+  }
+
+  public void setPaneController(PaneController pc){
+    this.pc = pc;
+  }
 }

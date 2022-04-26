@@ -25,7 +25,7 @@ public class PaneController extends GameGrid {
     this.npController = npController;
     this.cup = cup;
     this.cc = cc;
-    cup.setNavigationPane(npController.getNp());
+    cup.setPaneController(this);
     new SimulatedPlayer().start();
 
     gpController.getGpModel().createSnakesLadders(properties);
