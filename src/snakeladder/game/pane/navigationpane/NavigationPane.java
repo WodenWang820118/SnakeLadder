@@ -133,12 +133,8 @@ public class NavigationPane extends GameGrid implements GGButtonListener{
     statusBoard.addStatusFields(this);
   }
 
-  public void autoToggle(boolean check){
-    if(check){
-      pc.getGp().changeAllConnection();
-    }else{
-      pc.getGp().resetAllConnection();
-    }
+  public GGCheckButton getToggleCheck(){
+    return toggleCheck;
   }
 
   public void prepareRoll(int currentIndex) {
